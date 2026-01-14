@@ -1,3 +1,9 @@
+## [1.9.1](https://github.com/vunamhung/antikit/compare/v1.9.0...v1.9.1) (2026-01-14)
+
+### Bug Fixes
+
+- **github:** support GITHUB_TOKEN auth and handle rate limits ([7bd5dc2](https://github.com/vunamhung/antikit/commit/7bd5dc22c7276345da9a680216e9e6ebe3ee73e4))
+
 # [1.9.0](https://github.com/vunamhung/antikit/compare/v1.8.1...v1.9.0) (2026-01-14)
 
 ### Features
