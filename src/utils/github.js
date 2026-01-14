@@ -95,14 +95,20 @@ export async function fetchSkillInfo(skillName, owner, repo) {
     const data = await response.json();
     const content = Buffer.from(data.content, 'base64').toString('utf-8');
 
-    // Extract description from YAML frontmatter
+    // Extract info from YAML frontmatter
     const match = content.match(/^---\n([\s\S]*?)\n---/);
     if (match) {
-        const descMatch = match[1].match(/description:\s*(.+)/);
-        return descMatch ? descMatch[1].trim() : null;
+        const frontmatter = match[1];
+        const descMatch = frontmatter.match(/description:\s*(.+)/);
+        const versionMatch = frontmatter.match(/version:\s*(.+)/);
+
+        return {
+            description: descMatch ? descMatch[1].trim() : null,
+            version: versionMatch ? versionMatch[1].trim() : '0.0.0'
+        };
     }
 
-    return null;
+    return { description: null, version: '0.0.0' };
 }
 
 /**

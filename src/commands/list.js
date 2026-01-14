@@ -2,8 +2,21 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { checkbox, confirm } from '@inquirer/prompts';
 import { fetchRemoteSkills, fetchSkillInfo } from '../utils/github.js';
-import { skillExists } from '../utils/local.js';
+import { skillExists, getOrCreateSkillsDir } from '../utils/local.js';
 import { installSkill } from './install.js';
+import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
+
+function compareVersions(v1, v2) {
+    if (!v1 || !v2) return 0;
+    const p1 = v1.split('.').map(Number);
+    const p2 = v2.split('.').map(Number);
+    for (let i = 0; i < 3; i++) {
+        if ((p1[i] || 0) > (p2[i] || 0)) return 1;
+        if ((p1[i] || 0) < (p2[i] || 0)) return -1;
+    }
+    return 0;
+}
 
 export async function listRemoteSkills(options) {
     const sourceName = options.source || null;
@@ -26,13 +39,32 @@ export async function listRemoteSkills(options) {
             return;
         }
 
-        // Fetch descriptions
+        const skillsDir = getOrCreateSkillsDir();
+
+        // Fetch descriptions & versions
         const infoSpinner = ora('Fetching skill info...').start();
         const skillsWithInfo = await Promise.all(
             skills.map(async (skill) => {
-                const description = await fetchSkillInfo(skill.name, skill.owner, skill.repo);
+                const info = await fetchSkillInfo(skill.name, skill.owner, skill.repo);
+                const description = info ? info.description : null;
+                const remoteVersion = info ? info.version : '0.0.0';
+
                 const installed = skillExists(skill.name);
-                return { ...skill, description, installed };
+                let updateAvailable = false;
+                let localVersion = '0.0.0';
+
+                if (installed) {
+                    try {
+                        const metaPath = join(skillsDir, skill.name, '.antikit-skill.json');
+                        if (existsSync(metaPath)) {
+                            const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+                            localVersion = meta.version || '0.0.0';
+                            updateAvailable = compareVersions(remoteVersion, localVersion) > 0;
+                        }
+                    } catch { }
+                }
+
+                return { ...skill, description, installed, updateAvailable, localVersion, remoteVersion };
             })
         );
         infoSpinner.stop();
@@ -68,11 +100,14 @@ function displaySkillsList(skills) {
     for (const [sourceName, sourceSkills] of Object.entries(bySource)) {
         console.log(chalk.magenta.bold(`\n📦 ${sourceName}`));
         for (const skill of sourceSkills) {
-            const status = skill.installed
-                ? chalk.green(' ✓')
-                : chalk.dim('  ');
+            let status = chalk.dim('  ');
+            if (skill.installed) {
+                status = skill.updateAvailable
+                    ? chalk.yellow(' ↑')
+                    : chalk.green(' ✓');
+            }
 
-            console.log(`${status} ${chalk.cyan.bold(skill.name)}`);
+            console.log(`${status} ${chalk.cyan.bold(skill.name)} ${skill.installed ? chalk.dim(`(v${skill.localVersion}${skill.updateAvailable ? ` → v${skill.remoteVersion}` : ''})`) : ''}`);
             if (skill.description) {
                 console.log(`     ${chalk.dim(skill.description)}`);
             }
@@ -85,15 +120,35 @@ function displaySkillsList(skills) {
 
 async function interactiveInstall(skills) {
     // Prepare choices for checkbox
-    const choices = skills.map(skill => ({
-        name: `${skill.installed ? chalk.green('✓') : ' '} ${chalk.cyan(skill.name)} ${chalk.dim(`[${skill.source}]`)} ${skill.description ? chalk.dim('- ' + skill.description.slice(0, 50) + '...') : ''}`,
-        value: skill,
-        disabled: skill.installed ? '(installed)' : false
-    }));
+    const choices = skills.map(skill => {
+        let label = '';
+        let disabled = false;
+
+        if (skill.installed) {
+            if (skill.updateAvailable) {
+                label = `${chalk.yellow('↑')} ${chalk.cyan(skill.name)} ${chalk.yellow(`(Update: v${skill.localVersion} → v${skill.remoteVersion})`)}`;
+            } else {
+                label = `${chalk.green('✓')} ${chalk.cyan(skill.name)} ${chalk.dim('(Installed)')}`;
+                disabled = true; // Disable if installed and no update
+            }
+        } else {
+            label = `${chalk.dim(' ')} ${chalk.cyan(skill.name)}`;
+        }
+
+        if (skill.description) {
+            label += ` ${chalk.dim('- ' + skill.description.slice(0, 40) + '...')}`;
+        }
+
+        return {
+            name: label,
+            value: skill,
+            disabled
+        };
+    });
 
     // Show checkbox selection
     const selected = await checkbox({
-        message: 'Select skills to install (Space to select, Enter to confirm):',
+        message: 'Select skills to install/update (Space to select, Enter to confirm):',
         choices,
         pageSize: 15
     });
@@ -105,21 +160,23 @@ async function interactiveInstall(skills) {
 
     // Confirm installation
     const shouldInstall = await confirm({
-        message: `Install ${selected.length} skill(s)?`,
+        message: `Install/Update ${selected.length} skill(s)?`,
         default: true
     });
 
     if (!shouldInstall) {
-        console.log(chalk.yellow('Installation cancelled.'));
+        console.log(chalk.yellow('Operation cancelled.'));
         return;
     }
 
     // Install selected skills
     console.log();
     for (const skill of selected) {
-        await installSkill(skill.name, { force: false, owner: skill.owner, repo: skill.repo });
+        // Force install if updating
+        const force = skill.installed && skill.updateAvailable;
+        await installSkill(skill.name, { force, owner: skill.owner, repo: skill.repo });
     }
 
     console.log();
-    console.log(chalk.green.bold(`✓ Installed ${selected.length} skill(s)`));
+    console.log(chalk.green.bold(`✓ Processed ${selected.length} skill(s)`));
 }

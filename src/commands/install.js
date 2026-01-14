@@ -137,9 +137,21 @@ export async function installSkill(skillName, options = {}) {
 
         // Save skill metadata for future upgrades
         try {
+            let version = '0.0.0';
+            const mdPath = join(destPath, 'SKILL.md');
+            if (existsSync(mdPath)) {
+                // We likely already imported readFileSync if inside try block, 
+                // but for safety use dynamic import or assume imported
+                const { readFileSync } = await import('fs');
+                const content = readFileSync(mdPath, 'utf-8');
+                const vMatch = content.match(/^version:\s*(.+)/m);
+                if (vMatch) version = vMatch[1].trim();
+            }
+
             const metadata = {
                 name: skillName,
                 source: { owner, repo },
+                version,
                 installedAt: Date.now()
             };
             writeFileSync(join(destPath, '.antikit-skill.json'), JSON.stringify(metadata, null, 2));
