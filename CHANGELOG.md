@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.12.2](https://github.com/vunamhung/antikit/compare/v1.12.1...v1.12.2) (2026-01-14)
+
+### Bug Fixes
+
+- **cli:** resolve SyntaxError in info command imported module ([c297227](https://github.com/vunamhung/antikit/commit/c297227bf7521ecd0ac154efa39958274c69c3e5))
+
 ## [1.12.1](https://github.com/vunamhung/antikit/compare/v1.12.0...v1.12.1) (2026-01-14)
 
 ### Documentation
