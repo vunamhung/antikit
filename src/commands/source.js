@@ -7,6 +7,8 @@ import {
   getConfigPath
 } from '../utils/configManager.js';
 
+import Table from 'cli-table3';
+
 /**
  * List all configured sources
  */
@@ -14,19 +16,25 @@ export function listSources() {
   const sources = getSources();
 
   console.log(chalk.bold('\nConfigured Sources:'));
-  console.log(chalk.dim('─'.repeat(60)));
+
+  const table = new Table({
+    head: [chalk.cyan('Name'), chalk.cyan('Repository'), chalk.cyan('Branch'), chalk.cyan('Path')],
+    colWidths: [20, 40, 15, 20],
+    style: { head: [], border: [] }
+  });
 
   for (const source of sources) {
-    const defaultBadge = source.default ? chalk.green(' (default)') : '';
-    console.log(`  ${chalk.cyan.bold(source.name)}${defaultBadge}`);
-    console.log(
-      `    ${chalk.dim('→')} ${chalk.white(`${source.owner}/${source.repo}`)} ${chalk.dim(`[${source.branch}]`)}`
-    );
+    const defaultBadge = source.default ? chalk.green(' *') : '';
+    table.push([
+      chalk.bold(source.name) + defaultBadge,
+      `${source.owner}/${source.repo}`,
+      source.branch || 'main',
+      source.path || chalk.dim('(root)')
+    ]);
   }
 
-  console.log();
-  console.log(chalk.dim(`Config file: ${getConfigPath()}`));
-  console.log();
+  console.log(table.toString());
+  console.log(chalk.dim(`\nConfig file: ${getConfigPath()}\n`));
 }
 
 /**

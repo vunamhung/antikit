@@ -7,24 +7,29 @@ import {
   loadConfig
 } from '../utils/configManager.js';
 
+import Table from 'cli-table3';
+
 /**
  * List all configurations
  */
 export function listConfig() {
   const config = loadConfig();
   console.log(chalk.bold('\nCurrent Configuration:'));
-  console.log(chalk.dim('─'.repeat(40)));
 
-  if (config.githubToken) {
-    console.log(`GitHub Token: ${chalk.green('********' + config.githubToken.slice(-4))}`);
-  } else {
-    console.log(`GitHub Token: ${chalk.dim('(not set)')}`);
-  }
+  const table = new Table({
+    head: [chalk.cyan('Setting'), chalk.cyan('Value')],
+    colWidths: [20, 60],
+    style: { head: [], border: [] }
+  });
 
-  // List other configs if any...
+  const tokenDisplay = config.githubToken
+    ? chalk.green('********' + config.githubToken.slice(-4))
+    : chalk.yellow('(not set)');
 
-  console.log();
-  console.log(chalk.dim(`Config file: ${getConfigPath()}`));
+  table.push(['GitHub Token', tokenDisplay]);
+  table.push(['Config File', getConfigPath()]);
+
+  console.log(table.toString());
   console.log();
 }
 
