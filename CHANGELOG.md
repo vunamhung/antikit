@@ -1,3 +1,9 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [1.10.3](https://github.com/vunamhung/antikit/compare/v1.10.2...v1.10.3) (2026-01-14)
+
 ## [1.10.2](https://github.com/vunamhung/antikit/compare/v1.10.1...v1.10.2) (2026-01-14)
 
 ### Bug Fixes
