@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.12.6](https://github.com/vunamhung/antikit/compare/v1.12.5...v1.12.6) (2026-01-14)
+
+### Styles
+
+- **cli:** use consistent table format for 'list --text' command ([2ad31ac](https://github.com/vunamhung/antikit/commit/2ad31acc50b3531519fb074bfbb92fb9bacd9c5d))
+
 ## [1.12.5](https://github.com/vunamhung/antikit/compare/v1.12.4...v1.12.5) (2026-01-14)
 
 ### Styles
