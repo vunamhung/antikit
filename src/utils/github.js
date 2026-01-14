@@ -2,6 +2,18 @@ import { getSources } from './configManager.js';
 
 const GITHUB_API = 'https://api.github.com';
 
+function getHeaders() {
+  const headers = {
+    Accept: 'application/vnd.github.v3+json',
+    'User-Agent': 'antikit-cli'
+  };
+  const token = process.env.ANTIKIT_GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+  if (token) {
+    headers.Authorization = `token ${token}`;
+  }
+  return headers;
+}
+
 /**
  * Fetch list of skills from a specific source
  */
@@ -12,14 +24,19 @@ async function fetchSkillsFromSource(source) {
   }
 
   const response = await fetch(url, {
-    headers: {
-      Accept: 'application/vnd.github.v3+json',
-      'User-Agent': 'antikit-cli'
-    }
+    headers: getHeaders()
   });
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
+
+    // Check for rate limit
+    if (response.status === 403 && data.message.includes('rate limit')) {
+      console.error('\n⚠️  GitHub API rate limit exceeded.');
+      console.error(
+        'Please set GITHUB_TOKEN or ANTIKIT_GITHUB_TOKEN environment variable to increase limit.\n'
+      );
+    }
     // Handle empty repository
     if (data.message === 'This repository is empty.') {
       return [];
@@ -91,10 +108,7 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null) {
   url += `/${skillName}/SKILL.md`;
 
   const response = await fetch(url, {
-    headers: {
-      Accept: 'application/vnd.github.v3+json',
-      'User-Agent': 'antikit-cli'
-    }
+    headers: getHeaders()
   });
 
   if (!response.ok) {
