@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/vunamhung/antikit/compare/v1.1.1...v1.2.0) (2026-01-14)
+
+
+### Features
+
+* **source:** add multi-source support for skill repositories ([8ef5f7d](https://github.com/vunamhung/antikit/commit/8ef5f7dabcf69d7fe5bac0ccca4a94ee37223034))
+
 ## [1.1.1](https://github.com/vunamhung/antikit/compare/v1.1.0...v1.1.1) (2026-01-14)
 
 
