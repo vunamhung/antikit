@@ -1,3 +1,9 @@
+# [1.9.0](https://github.com/vunamhung/antikit/compare/v1.8.1...v1.9.0) (2026-01-14)
+
+### Features
+
+- **source:** support sub-directory sources via --path option ([b2e5a0d](https://github.com/vunamhung/antikit/commit/b2e5a0d4d19bd1b11eac8ccb98794e3a9d903289))
+
 ## [1.8.1](https://github.com/vunamhung/antikit/compare/v1.8.0...v1.8.1) (2026-01-14)
 
 ### Bug Fixes
