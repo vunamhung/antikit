@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/vunamhung/antikit/compare/v1.1.0...v1.1.1) (2026-01-14)
+
+
+### Bug Fixes
+
+* **cli:** read version from package.json dynamically ([8e830fb](https://github.com/vunamhung/antikit/commit/8e830fb67d2ddfadd917e6021a091024c8dc21af))
+
 # [1.1.0](https://github.com/vunamhung/antikit/compare/v1.0.1...v1.1.0) (2026-01-14)
 
 
