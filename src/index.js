@@ -12,13 +12,11 @@ import { upgradeSkills } from './commands/upgrade.js';
 import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
 import { checkForUpdates } from './utils/updateNotifier.js';
 
-
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
 
 // Check for updates (non-blocking)
 checkForUpdates(pkg.name, pkg.version);
-
 
 const program = new Command();
 
@@ -93,10 +91,6 @@ sourceCmd
   .description('Remove a source by name')
   .action(removeExistingSource);
 
-sourceCmd
-  .command('default <name>')
-  .description('Set default source')
-  .action(setDefault);
+sourceCmd.command('default <name>').description('Set default source').action(setDefault);
 
 program.parse();
-

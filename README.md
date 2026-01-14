@@ -13,6 +13,7 @@ npm install -g antikit
 ### 📦 Manage Skills
 
 #### List available skills
+
 ```bash
 antikit list
 # or
@@ -29,6 +30,7 @@ antikit list --source official
 ```
 
 #### Install a skill
+
 Automatically installs dependencies defined in `SKILL.md`.
 
 ```bash
@@ -41,6 +43,7 @@ antikit install <skill-name> --force
 ```
 
 #### Upgrade installed skills
+
 Update your local skills to the latest version from their sources.
 
 ```bash
@@ -55,6 +58,7 @@ antikit upgrade --yes
 ```
 
 #### List installed local skills
+
 ```bash
 antikit local
 # or
@@ -62,6 +66,7 @@ antikit l
 ```
 
 #### Remove a skill
+
 ```bash
 antikit remove <skill-name>
 # or
@@ -71,6 +76,7 @@ antikit rm <skill-name>
 ---
 
 ### 📡 Manage Sources
+
 You can fetch skills from multiple GitHub repositories.
 
 ```bash
@@ -93,32 +99,35 @@ antikit source remove private
 ---
 
 ### 🔄 Self Update
+
 Update the `antikit` CLI tool itself to the latest version.
 
 ```bash
 antikit update
 ```
-*Note: You will also be notified automatically if a new version is available when running any command.*
+
+_Note: You will also be notified automatically if a new version is available when running any command._
 
 ---
 
 ## Skill Development
 
 ### Skill Structure
+
 A skill is a directory containing a `SKILL.md` file.
 
 ### Defining Dependencies
+
 You can specify dependencies in the `SKILL.md` frontmatter. `antikit` will automatically install them.
 
 ```yaml
 ---
 name: my-skill
 description: A powerful skill that needs helpers
-dependencies: 
+dependencies:
   - sql-helper
   - python-runner
 ---
-
 # My Skill Content
 ...
 ```
