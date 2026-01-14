@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import ora from 'ora';
 import { execSync } from 'child_process';
-import { existsSync, mkdirSync, cpSync, rmSync } from 'fs';
+import { existsSync, mkdirSync, cpSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { getOrCreateSkillsDir, skillExists } from '../utils/local.js';
@@ -69,7 +69,64 @@ export async function installSkill(skillName, options = {}) {
         if (!existsSync(sourcePath)) {
             rmSync(tempDir, { recursive: true, force: true });
             spinner.fail(`Skill "${skillName}" not found in ${owner}/${repo}`);
+            if (options.noExit) throw new Error('Skill not found');
             process.exit(1);
+        }
+
+        // --- Check dependencies ---
+        try {
+            const mdPath = join(sourcePath, 'SKILL.md');
+            if (existsSync(mdPath)) {
+                // Import locally to avoid cluttering top imports if possible, or just use fs
+                const { readFileSync } = await import('fs');
+                const content = readFileSync(mdPath, 'utf-8');
+
+                // Parse frontmatter dependencies
+                // Supports inline: dependencies: [a, b]
+                // Supports list: 
+                // dependencies:
+                //   - a
+                //   - b
+                let deps = [];
+
+                // Try inline
+                const inlineMatch = content.match(/^dependencies:\s*\[(.*?)\]/m);
+                if (inlineMatch) {
+                    deps = inlineMatch[1].split(',').map(s => s.trim().replace(/['"]/g, '')).filter(Boolean);
+                } else {
+                    // Try list
+                    const listMatch = content.match(/^dependencies:\s*\n((?:\s*-\s*.+\n?)+)/m);
+                    if (listMatch) {
+                        deps = listMatch[1].split('\n')
+                            .map(l => l.replace(/^\s*-\s*/, '').trim())
+                            .filter(Boolean);
+                    }
+                }
+
+                if (deps.length > 0) {
+                    spinner.stop();
+                    console.log(chalk.blue(`\nSkill "${skillName}" requires: ${deps.join(', ')}`));
+
+                    for (const dep of deps) {
+                        // Prevent infinite recursion if self-referencing
+                        if (dep === skillName) continue;
+
+                        if (!skillExists(dep)) {
+                            console.log(chalk.dim(`Installing dependency: ${dep}...`));
+                            // Recursive install
+                            await installSkill(dep, {
+                                ...options,
+                                force: false,
+                                noExit: true // Don't exit on dependency failure, just log
+                            });
+                        }
+                    }
+                    spinner.start(`Resuming installation of "${skillName}"...`);
+                }
+            }
+        } catch (e) {
+            // Dep check failed, but continue installing main skill
+            // console.error(e);
         }
 
         if (options.force && existsSync(destPath)) {
@@ -77,6 +134,18 @@ export async function installSkill(skillName, options = {}) {
         }
 
         cpSync(sourcePath, destPath, { recursive: true });
+
+        // Save skill metadata for future upgrades
+        try {
+            const metadata = {
+                name: skillName,
+                source: { owner, repo },
+                installedAt: Date.now()
+            };
+            writeFileSync(join(destPath, '.antikit-skill.json'), JSON.stringify(metadata, null, 2));
+        } catch (e) {
+            // Ignore metadata write error, not critical
+        }
 
         // Cleanup temp
         rmSync(tempDir, { recursive: true, force: true });
@@ -87,7 +156,9 @@ export async function installSkill(skillName, options = {}) {
     } catch (error) {
         spinner.fail(`Failed to install "${skillName}"`);
         console.error(chalk.red(error.message));
+        if (options.noExit) {
+            throw error;
+        }
         process.exit(1);
     }
 }
-

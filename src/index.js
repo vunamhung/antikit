@@ -8,8 +8,10 @@ import { listLocalSkills } from './commands/local.js';
 import { installSkill } from './commands/install.js';
 import { removeSkill } from './commands/remove.js';
 import { updateCli } from './commands/update.js';
+import { upgradeSkills } from './commands/upgrade.js';
 import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
 import { checkForUpdates } from './utils/updateNotifier.js';
+
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
@@ -58,6 +60,13 @@ program
   .alias('up')
   .description('Update antikit to the latest version')
   .action(updateCli);
+
+program
+  .command('upgrade [skill]')
+  .alias('ug')
+  .description('Upgrade installed skills')
+  .option('-y, --yes', 'Skip confirmation')
+  .action(upgradeSkills);
 
 // Source management commands
 const sourceCmd = program
