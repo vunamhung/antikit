@@ -8,9 +8,14 @@ import { listLocalSkills } from './commands/local.js';
 import { installSkill } from './commands/install.js';
 import { removeSkill } from './commands/remove.js';
 import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
+import { checkForUpdates } from './utils/updateNotifier.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
+
+// Check for updates (non-blocking)
+checkForUpdates(pkg.name, pkg.version);
+
 
 const program = new Command();
 
