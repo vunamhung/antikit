@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.12.5](https://github.com/vunamhung/antikit/compare/v1.12.4...v1.12.5) (2026-01-14)
+
+### Styles
+
+- **cli:** unify table output for 'source list' and 'config list' ([5032912](https://github.com/vunamhung/antikit/commit/503291288cf2636bd682bcb99096d2857ee8bf4b))
+
 ## [1.12.4](https://github.com/vunamhung/antikit/compare/v1.12.3...v1.12.4) (2026-01-14)
 
 ### Styles
