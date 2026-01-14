@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import ora from 'ora';
 import { checkbox, confirm, Separator } from '@inquirer/prompts';
+import Table from 'cli-table3';
 import { fetchRemoteSkills, fetchSkillInfo } from '../utils/github.js';
 import { skillExists, getOrCreateSkillsDir } from '../utils/local.js';
 import { installSkill } from './install.js';
@@ -100,43 +101,59 @@ export async function listRemoteSkills(options) {
 }
 
 function displaySkillsList(skills) {
-  console.log(chalk.bold('Available Skills:'));
-  console.log(chalk.dim('─'.repeat(60)));
+  console.log(chalk.bold('\nAvailable Skills:'));
 
-  // Group by source
-  const bySource = skills.reduce((acc, skill) => {
-    const src = skill.source || 'unknown';
-    if (!acc[src]) acc[src] = [];
-    acc[src].push(skill);
-    return acc;
-  }, {});
-
-  const sortedSourceNames = Object.keys(bySource).sort((a, b) => {
-    if (a === 'official') return -1;
-    if (b === 'official') return 1;
-    return a.localeCompare(b);
+  const table = new Table({
+    head: [
+      chalk.cyan('Source'),
+      chalk.cyan('Skill Name'),
+      chalk.cyan('Version'),
+      chalk.cyan('Status'),
+      chalk.cyan('Description')
+    ],
+    colWidths: [15, 25, 12, 12, Math.max(20, (process.stdout.columns || 80) - 74)],
+    wordWrap: true,
+    style: { head: [], border: [] }
   });
 
-  for (const sourceName of sortedSourceNames) {
-    const sourceSkills = bySource[sourceName];
-    console.log(chalk.magenta.bold(`\n📦 ${sourceName}`));
-    for (const skill of sourceSkills) {
-      let status = chalk.dim('  ');
-      if (skill.installed) {
-        status = skill.updateAvailable ? chalk.yellow(' ↑') : chalk.green(' ✓');
-      }
+  // Sort: Official first, then Source, then Name
+  skills.sort((a, b) => {
+    if (a.source === 'official' && b.source !== 'official') return -1;
+    if (b.source === 'official' && a.source !== 'official') return 1;
+    if (a.source !== b.source) return a.source.localeCompare(b.source);
+    return a.name.localeCompare(b.name);
+  });
 
-      console.log(
-        `${status} ${chalk.cyan.bold(skill.name)} ${skill.installed ? chalk.dim(`(v${skill.localVersion}${skill.updateAvailable ? ` → v${skill.remoteVersion}` : ''})`) : ''}`
-      );
-      if (skill.description) {
-        console.log(`     ${chalk.dim(skill.description)}`);
+  skills.forEach(skill => {
+    let status = '';
+    if (skill.installed) {
+      status = skill.updateAvailable ? chalk.yellow('Update') : chalk.green('Installed');
+    }
+
+    let versionDisplay = skill.remoteVersion || '0.0.0';
+    if (skill.installed && skill.localVersion) {
+      if (skill.updateAvailable) {
+        versionDisplay = `${chalk.dim(skill.localVersion)}→${chalk.yellow(skill.remoteVersion)}`;
+      } else {
+        versionDisplay = skill.localVersion;
       }
     }
-  }
 
-  console.log();
-  console.log(chalk.dim(`Use ${chalk.white('antikit list -i')} to select and install skills`));
+    table.push([
+      chalk.magenta(skill.source),
+      chalk.bold(skill.name),
+      versionDisplay,
+      status,
+      skill.description || chalk.dim('')
+    ]);
+  });
+
+  console.log(table.toString());
+  console.log(
+    chalk.dim(
+      `\nUse ${chalk.white('antikit list -i')} to select and install skills interactively.\n`
+    )
+  );
 }
 
 async function interactiveInstall(skills) {
