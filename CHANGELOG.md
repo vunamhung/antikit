@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.11.2](https://github.com/vunamhung/antikit/compare/v1.11.1...v1.11.2) (2026-01-14)
+
+### Chores
+
+- **release:** Remove .releaserc.json configuration file ([60a582e](https://github.com/vunamhung/antikit/commit/60a582e1a1c7e6f110259456b25546b6f2abcd59))
+
+### Documentation
+
+- restructure and expand readme with full command usage ([0a47d43](https://github.com/vunamhung/antikit/commit/0a47d43bd594cc3fcd201035d2570054fa6d14b8))
+
 ## [1.11.1](https://github.com/vunamhung/antikit/compare/v1.11.0...v1.11.1) (2026-01-14)
 
 ### Documentation
