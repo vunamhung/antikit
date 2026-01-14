@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.12.0](https://github.com/vunamhung/antikit/compare/v1.11.2...v1.12.0) (2026-01-14)
+
+### Features
+
+- add info and validate commands for better skill management and dev experience ([a0b4e17](https://github.com/vunamhung/antikit/commit/a0b4e17f3fc2465659d978d44a88e19061a79059))
+
+### Continuous Integration
+
+- add action to auto-create github release on tag push ([8c801ac](https://github.com/vunamhung/antikit/commit/8c801ac071527d74eb675c0d6986e53d015d5882))
+- add npm publish step to release workflow ([be2f0ce](https://github.com/vunamhung/antikit/commit/be2f0ce3f0e8c80b5acdd08bb79dcde5ad5ebfb0))
+
 ## [1.11.2](https://github.com/vunamhung/antikit/compare/v1.11.1...v1.11.2) (2026-01-14)
 
 ### Chores
