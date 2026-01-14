@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.11.0](https://github.com/vunamhung/antikit/compare/v1.10.4...v1.11.0) (2026-01-14)
+
+### Features
+
+- **github:** support private repositories via token auth ([02ed231](https://github.com/vunamhung/antikit/commit/02ed231ee70b426954e5c1b77d78ab2c14940e5e))
+
 ## [1.10.4](https://github.com/vunamhung/antikit/compare/v1.10.3...v1.10.4) (2026-01-14)
 
 ### Bug Fixes
