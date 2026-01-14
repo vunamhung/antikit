@@ -23,7 +23,7 @@ export async function listLocalSkills() {
 
   const table = new Table({
     head: [chalk.cyan('Skill Name'), chalk.cyan('Version'), chalk.cyan('Description')],
-    colWidths: [25, 12, 60],
+    colWidths: [30, 15, Math.max(20, (process.stdout.columns || 80) - 55)],
     wordWrap: true,
     style: { head: [], border: [] }
   });
