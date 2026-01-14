@@ -7,6 +7,8 @@ import { listRemoteSkills } from './commands/list.js';
 import { listLocalSkills } from './commands/local.js';
 import { installSkill } from './commands/install.js';
 import { removeSkill } from './commands/remove.js';
+import { showSkillInfo } from './commands/info.js';
+import { validateSkill } from './commands/validate.js';
 import { updateCli } from './commands/update.js';
 import { upgradeSkills } from './commands/upgrade.js';
 import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
@@ -58,6 +60,17 @@ program
   .alias('rm')
   .description('Remove an installed skill')
   .action(removeSkill);
+
+program
+  .command('info <skill>')
+  .alias('doc')
+  .description('Show skill documentation (SKILL.md)')
+  .action(showSkillInfo);
+
+program
+  .command('validate [path]')
+  .description('Validate SKILL.md structure and metadata')
+  .action(validateSkill);
 
 program
   .command('update')

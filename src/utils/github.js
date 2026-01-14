@@ -276,11 +276,12 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
 
     return {
       description: descMatch ? descMatch[1].trim() : null,
-      version: versionMatch ? versionMatch[1].trim() : '0.0.0'
+      version: versionMatch ? versionMatch[1].trim() : '0.0.0',
+      content // Return raw content
     };
   }
 
-  return { description: null, version: '0.0.0' };
+  return { description: null, version: '0.0.0', content };
 }
 
 /**
