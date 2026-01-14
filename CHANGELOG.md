@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/vunamhung/antikit/compare/v1.4.0...v1.5.0) (2026-01-14)
+
+
+### Features
+
+* add upgrade command and dependency management ([0f367b5](https://github.com/vunamhung/antikit/commit/0f367b524f93328b4c539c84fb3a5f11e88e72c4))
+
 # [1.4.0](https://github.com/vunamhung/antikit/compare/v1.3.1...v1.4.0) (2026-01-14)
 
 
