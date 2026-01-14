@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import ora from 'ora';
-import { checkbox, confirm } from '@inquirer/prompts';
+import { checkbox, confirm, Separator } from '@inquirer/prompts';
 import { fetchRemoteSkills, fetchSkillInfo } from '../utils/github.js';
 import { skillExists, getOrCreateSkillsDir } from '../utils/local.js';
 import { installSkill } from './install.js';
@@ -119,8 +119,22 @@ function displaySkillsList(skills) {
 }
 
 async function interactiveInstall(skills) {
-    // Prepare choices for checkbox
-    const choices = skills.map(skill => {
+    // Sort skills by Source then Name
+    skills.sort((a, b) => {
+        if (a.source !== b.source) return a.source.localeCompare(b.source);
+        return a.name.localeCompare(b.name);
+    });
+
+    const choices = [];
+    let currentSource = null;
+
+    for (const skill of skills) {
+        // Add Separator for new source
+        if (skill.source !== currentSource) {
+            currentSource = skill.source;
+            choices.push(new Separator(` \n ──────── Source: ${chalk.bold.magenta(currentSource)} ────────`));
+        }
+
         let label = '';
         let disabled = false;
 
@@ -129,7 +143,7 @@ async function interactiveInstall(skills) {
                 label = `${chalk.yellow('↑')} ${chalk.cyan(skill.name)} ${chalk.yellow(`(Update: v${skill.localVersion} → v${skill.remoteVersion})`)}`;
             } else {
                 label = `${chalk.green('✓')} ${chalk.cyan(skill.name)} ${chalk.dim('(Installed)')}`;
-                disabled = true; // Disable if installed and no update
+                disabled = true;
             }
         } else {
             label = `${chalk.dim(' ')} ${chalk.cyan(skill.name)}`;
@@ -139,18 +153,19 @@ async function interactiveInstall(skills) {
             label += ` ${chalk.dim('- ' + skill.description.slice(0, 40) + '...')}`;
         }
 
-        return {
+        choices.push({
             name: label,
             value: skill,
             disabled
-        };
-    });
+        });
+    }
 
     // Show checkbox selection
     const selected = await checkbox({
-        message: 'Select skills to install/update (Space to select, Enter to confirm):',
+        message: 'Select skills to install/update:',
         choices,
-        pageSize: 15
+        pageSize: 20, // Increase page size for better view
+        loop: false
     });
 
     if (selected.length === 0) {
