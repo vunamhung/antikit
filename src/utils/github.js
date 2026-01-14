@@ -28,7 +28,7 @@ function logRateLimitError() {
   );
   console.error('\nTo fix this:');
   console.error(
-    `1. Create a token: ${chalk.underline('https://github.com/settings/tokens/new?description=antikit-cli&scopes=public_repo')}`
+    `1. Create a token: ${chalk.underline('https://github.com/settings/tokens/new?description=antikit-cli&scopes=repo')}`
   );
   console.error(`2. Run command:  ${chalk.cyan('antikit config set-token <your_token>')}`);
   console.error();
@@ -230,7 +230,9 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
     rawUrl += `/${skillName}/SKILL.md`;
 
     try {
-      const res = await fetch(rawUrl);
+      const res = await fetch(rawUrl, {
+        headers: getHeaders()
+      });
       if (res.ok) {
         content = await res.text();
       }
