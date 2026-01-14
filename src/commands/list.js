@@ -111,7 +111,14 @@ function displaySkillsList(skills) {
     return acc;
   }, {});
 
-  for (const [sourceName, sourceSkills] of Object.entries(bySource)) {
+  const sortedSourceNames = Object.keys(bySource).sort((a, b) => {
+    if (a === 'official') return -1;
+    if (b === 'official') return 1;
+    return a.localeCompare(b);
+  });
+
+  for (const sourceName of sortedSourceNames) {
+    const sourceSkills = bySource[sourceName];
     console.log(chalk.magenta.bold(`\n📦 ${sourceName}`));
     for (const skill of sourceSkills) {
       let status = chalk.dim('  ');
@@ -133,8 +140,10 @@ function displaySkillsList(skills) {
 }
 
 async function interactiveInstall(skills) {
-  // Sort skills by Source then Name
+  // Sort skills by Source (Official first) then Name
   skills.sort((a, b) => {
+    if (a.source === 'official' && b.source !== 'official') return -1;
+    if (b.source === 'official' && a.source !== 'official') return 1;
     if (a.source !== b.source) return a.source.localeCompare(b.source);
     return a.name.localeCompare(b.name);
   });
