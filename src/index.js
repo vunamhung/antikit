@@ -19,6 +19,7 @@ program
   .alias('ls')
   .description('List available skills from remote repository')
   .option('-s, --search <query>', 'Search skills by name')
+  .option('-i, --interactive', 'Interactive mode to select and install skills')
   .action(listRemoteSkills);
 
 program
