@@ -1,6 +1,10 @@
+import chalk from 'chalk';
 import { getSources, getToken } from './configManager.js';
 
 const GITHUB_API = 'https://api.github.com';
+
+// Global flag to prevent duplicate rate limit logs
+let hasLoggedRateLimit = false;
 
 function getHeaders() {
   const headers = {
@@ -12,6 +16,22 @@ function getHeaders() {
     headers.Authorization = `token ${token}`;
   }
   return headers;
+}
+
+function logRateLimitError() {
+  if (hasLoggedRateLimit) return;
+  hasLoggedRateLimit = true;
+
+  console.error(chalk.yellow('\n⚠️  GitHub API rate limit exceeded.'));
+  console.error(
+    chalk.dim('You are seeing this because unauthenticated requests are limited to 60/hr.')
+  );
+  console.error('\nTo fix this:');
+  console.error(
+    `1. Create a token: ${chalk.underline('https://github.com/settings/tokens/new?description=antikit-cli&scopes=public_repo')}`
+  );
+  console.error(`2. Run command:  ${chalk.cyan('antikit config set-token <your_token>')}`);
+  console.error();
 }
 
 /**
@@ -44,8 +64,7 @@ async function fetchSkillsViaGraphQL(source, token) {
     }
     `;
 
-  const branch = source.branch || 'main'; // This logic might need verifying branch exists, but usually main/master
-  // Correct expression for path. If path is provided, it's "branch:path", else just "branch:"
+  const branch = source.branch || 'main';
   const expression = source.path ? `${branch}:${source.path}` : `${branch}:`;
 
   try {
@@ -79,7 +98,6 @@ async function fetchSkillsViaGraphQL(source, token) {
         let description = null;
         let version = '0.0.0';
 
-        // Attempt to parse SKILL.md content if it exists
         const skillFile = item.object.file && item.object.file[0];
         if (skillFile && skillFile.object && skillFile.object.text) {
           const content = skillFile.object.text;
@@ -100,9 +118,10 @@ async function fetchSkillsViaGraphQL(source, token) {
           source: source.name,
           owner: source.owner,
           repo: source.repo,
+          branch: source.branch || 'main',
           basePath: source.path,
-          description, // Pre-fetched!
-          version // Pre-fetched!
+          description,
+          version
         };
       });
   } catch (e) {
@@ -114,7 +133,7 @@ async function fetchSkillsViaGraphQL(source, token) {
  * Fetch list of skills from a specific source
  */
 async function fetchSkillsFromSource(source) {
-  // Try GraphQL first if token exists (Much faster)
+  // Try GraphQL first if token exists
   const token = getToken() || process.env.ANTIKIT_GITHUB_TOKEN || process.env.GITHUB_TOKEN;
   if (token) {
     const gqlResult = await fetchSkillsViaGraphQL(source, token);
@@ -126,7 +145,6 @@ async function fetchSkillsFromSource(source) {
   if (source.path) {
     url += `/${source.path}`;
   }
-  // ... rest of function
 
   const response = await fetch(url, {
     headers: getHeaders()
@@ -137,11 +155,9 @@ async function fetchSkillsFromSource(source) {
 
     // Check for rate limit
     if (response.status === 403 && data.message.includes('rate limit')) {
-      console.error('\n⚠️  GitHub API rate limit exceeded.');
-      console.error(
-        'Please set GITHUB_TOKEN or ANTIKIT_GITHUB_TOKEN environment variable to increase limit.\n'
-      );
+      logRateLimitError();
     }
+
     // Handle empty repository
     if (data.message === 'This repository is empty.') {
       return [];
@@ -153,7 +169,7 @@ async function fetchSkillsFromSource(source) {
   const contents = await response.json();
 
   if (!Array.isArray(contents)) {
-    return []; // Handle case where path points to file, not dir
+    return [];
   }
 
   // Filter only directories (skills)
@@ -162,12 +178,12 @@ async function fetchSkillsFromSource(source) {
     .map(item => ({
       name: item.name,
       url: item.html_url,
-      path: item.path, // Full path in repo (e.g. .claude/skills/foo)
+      path: item.path,
       source: source.name,
       owner: source.owner,
       repo: source.repo,
       branch: source.branch || 'main',
-      basePath: source.path // Keep track of base path
+      basePath: source.path
     }));
 
   return skills;
@@ -178,18 +194,16 @@ async function fetchSkillsFromSource(source) {
  */
 export async function fetchRemoteSkills(sourceName = null) {
   const sources = getSources();
-
-  // Filter by source name if provided
   const targetSources = sourceName ? sources.filter(s => s.name === sourceName) : sources;
 
   if (targetSources.length === 0) {
     throw new Error(`Source "${sourceName}" not found.`);
   }
 
-  // Fetch from all sources in parallel
-  const results = await Promise.all(targetSources.map(source => fetchSkillsFromSource(source)));
+  // Reset rate limit flag before new fetch
+  hasLoggedRateLimit = false;
 
-  // Flatten and return all skills
+  const results = await Promise.all(targetSources.map(source => fetchSkillsFromSource(source)));
   return results.flat();
 }
 
@@ -197,7 +211,6 @@ export async function fetchRemoteSkills(sourceName = null) {
  * Fetch SKILL.md content for a specific skill
  */
 export async function fetchSkillInfo(skillName, owner, repo, path = null, branch = null) {
-  // If owner/repo not provided, search in all sources
   if (!owner || !repo) {
     const skills = await fetchRemoteSkills();
     const skill = skills.find(s => s.name === skillName);
@@ -210,7 +223,7 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
 
   let content = null;
 
-  // Optimized: Use Raw URL if branch is known (avoids API rate limit)
+  // Optimized: Use Raw URL if branch is known
   if (branch) {
     let rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}`;
     if (path) rawUrl += `/${path}`;
@@ -221,12 +234,10 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
       if (res.ok) {
         content = await res.text();
       }
-    } catch (e) {
-      // Ignore fetch error, fallback to API
-    }
+    } catch (e) {}
   }
 
-  // Fallback: Use API (Counts against rate limit, but works if branch is wrong/private repo needs Auth)
+  // Fallback: Use API
   if (!content) {
     let url = `${GITHUB_API}/repos/${owner}/${repo}/contents`;
     if (path) {
@@ -239,6 +250,15 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
     });
 
     if (!response.ok) {
+      // Check for rate limit also here
+      if (response.status === 403) {
+        // We can check body/headers but usually 403 here means rate limit if 404 is handled
+        // But simpler just to ignore or log if we strictly check msg
+        try {
+          const d = await response.json();
+          if (d.message.includes('rate limit')) logRateLimitError();
+        } catch {}
+      }
       return null;
     }
 
@@ -246,7 +266,6 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
     content = Buffer.from(data.content, 'base64').toString('utf-8');
   }
 
-  // Extract info from YAML frontmatter
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   if (match) {
     const frontmatter = match[1];
