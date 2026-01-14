@@ -167,6 +167,27 @@ dependencies:
 ...
 ```
 
+---
+
+### 🔐 Authentication (Optional)
+
+To increase GitHub API rate limits (avoiding "API rate limit exceeded" errors), you can configure a Personal Access Token.
+
+```bash
+# Set token
+antikit config set-token ghp_xxxxxxxxxxxx
+
+# Check config
+antikit config list
+# or
+antikit config ls
+
+# Remove token
+antikit config remove-token
+```
+
+---
+
 ## Requirements
 
 - Node.js >= 18.0.0

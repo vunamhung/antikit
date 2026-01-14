@@ -164,6 +164,32 @@ export function setDefaultSource(name) {
 }
 
 /**
+ * Set GitHub Token
+ */
+export function setToken(token) {
+  const config = loadConfig();
+  config.githubToken = token;
+  saveConfig(config);
+}
+
+/**
+ * Get GitHub Token
+ */
+export function getToken() {
+  const config = loadConfig();
+  return config.githubToken;
+}
+
+/**
+ * Remove GitHub Token
+ */
+export function removeToken() {
+  const config = loadConfig();
+  delete config.githubToken;
+  saveConfig(config);
+}
+
+/**
  * Get config file path (for display)
  */
 export function getConfigPath() {

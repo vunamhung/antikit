@@ -10,6 +10,7 @@ import { removeSkill } from './commands/remove.js';
 import { updateCli } from './commands/update.js';
 import { upgradeSkills } from './commands/upgrade.js';
 import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
+import { listConfig, setGitHubToken, removeGitHubToken } from './commands/config.js';
 import { checkForUpdates } from './utils/updateNotifier.js';
 import { setupCompletion } from './utils/completion.js';
 
@@ -109,5 +110,20 @@ sourceCmd
   .action(removeExistingSource);
 
 sourceCmd.command('default <name>').description('Set default source').action(setDefault);
+
+// Config management commands
+const configCmd = program.command('config').description('Manage CLI configuration');
+
+configCmd.command('list').alias('ls').description('List current configuration').action(listConfig);
+
+configCmd
+  .command('set-token <token>')
+  .description('Set GitHub Personal Access Token')
+  .action(setGitHubToken);
+
+configCmd
+  .command('remove-token')
+  .description('Remove GitHub Personal Access Token')
+  .action(removeGitHubToken);
 
 program.parse();

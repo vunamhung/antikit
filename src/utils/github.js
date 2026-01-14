@@ -1,4 +1,4 @@
-import { getSources } from './configManager.js';
+import { getSources, getToken } from './configManager.js';
 
 const GITHUB_API = 'https://api.github.com';
 
@@ -7,7 +7,7 @@ function getHeaders() {
     Accept: 'application/vnd.github.v3+json',
     'User-Agent': 'antikit-cli'
   };
-  const token = process.env.ANTIKIT_GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+  const token = getToken() || process.env.ANTIKIT_GITHUB_TOKEN || process.env.GITHUB_TOKEN;
   if (token) {
     headers.Authorization = `token ${token}`;
   }
