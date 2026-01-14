@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { marked } from 'marked';
 import TerminalRenderer from 'marked-terminal';
-import { getSkillsDir, skillExists } from '../utils/local.js';
+import { findLocalSkillsDir, skillExists } from '../utils/local.js';
 import { fetchSkillInfo } from '../utils/github.js';
 
 // Setup marked to render to terminal
@@ -17,15 +17,17 @@ export async function showSkillInfo(skillName, options) {
     process.exit(1);
   }
 
-  const skillsDir = getSkillsDir();
-  const localSkillPath = path.join(skillsDir, skillName, 'SKILL.md');
-
   // 1. Try Local First
-  if (skillExists(skillName) && fs.existsSync(localSkillPath)) {
-    console.log(chalk.bold.green(`\n📖 Viewing local docs for: ${skillName}\n`));
-    const content = fs.readFileSync(localSkillPath, 'utf8');
-    console.log(marked(content));
-    return;
+  if (skillExists(skillName)) {
+    const skillsDir = findLocalSkillsDir();
+    const localSkillPath = path.join(skillsDir, skillName, 'SKILL.md');
+
+    if (fs.existsSync(localSkillPath)) {
+      console.log(chalk.bold.green(`\n📖 Viewing local docs for: ${skillName}\n`));
+      const content = fs.readFileSync(localSkillPath, 'utf8');
+      console.log(marked(content));
+      return;
+    }
   }
 
   // 2. Try Remote if not found locally
