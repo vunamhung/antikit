@@ -10,184 +10,188 @@ npm install -g antikit
 
 ## Features
 
-- **Multi-source Support**: Fetch skills from any GitHub repository.
-- **Sub-directory Support**: Skills can reside in sub-folders (e.g. `.claude/skills`).
-- **Interactive UI**: Browse, select, and update skills with a rich terminal UI.
-- **Dependency Management**: Automatically resolves and installs skill dependencies defined in `SKILL.md`.
-- **Smart Upgrades**: Detects version changes and allows easy upgrades.
-- **Autocomplete**: Full Zsh/Bash comparison support.
-
-## Usage
-
-### � Quick Start
-
-**1. Setup Autocomplete (Recommended)**
-
-```bash
-antikit completion
-# Follow instructions to add to ~/.zshrc or ~/.bashrc
-```
-
-**2. Browse & Install Skills**
-
-```bash
-antikit list
-# or simply
-antikit ls
-```
-
-_Shows an interactive menu to search, select, and install/update skills._
+- **Multi-source Support**: Fetch skills from any GitHub repository (Public or Private).
+- **Sub-directory Support**: Skills can reside in sub-folders (e.g. `.claude/skills`) within a repo.
+- **Interactive UI**: Browse, select, multi-install, and update skills with a rich terminal interface.
+- **Private Repo Access**: Seamless integration with private repositories via GitHub Token.
+- **Smart Upgrades**: Detects version changes, manages dependencies, and streamlines updates.
+- **Autocomplete**: Full Zsh/Bash/Fish tab-completion support.
+- **Performance**: Optimized fetching using GitHub GraphQL API.
 
 ---
 
-### �📦 Manage Skills
+## 🚀 Quick Start
 
-#### List available skills
+### 1. Setup Autocomplete (Recommended)
+
+This enables tab completion for commands and skill names.
 
 ```bash
-# Interactive mode (Default) - Browse, Multi-select, Update
-antikit ls
+antikit completion
+# Follow the instructions to add the script to your ~/.zshrc or ~/.bashrc
+```
 
-# Search skills by name
-antikit ls -s <query>
+### 2. Configure Authentication (Optional but Recommended)
 
-# Text mode (Non-interactive list)
-antikit ls --text
+To avoid API rate limits (60 requests/hr) and access **Private Repositories**, configure a GitHub Token.
+
+1.  **Create Token:** [Generate New Token](https://github.com/settings/tokens/new?description=antikit-cli&scopes=repo)
+    - Select scope `public_repo` (for public access) or `repo` (for private access).
+2.  **Set Token:**
+    ```bash
+    antikit config set-token ghp_YOUR_TOKEN_HERE
+    ```
+
+---
+
+## 📚 Usage Guide
+
+### 🔍 Discovery & Listing
+
+**Interactive Mode (Default)**
+Browse skills, see installed status, updates available, and descriptions. Use Space to select multiple skills and Enter to install.
+
+```bash
+antikit list
+# Alias: antikit ls
+```
+
+**Search & Filters**
+
+```bash
+# Search by skill name
+antikit ls -s <keyword>
 
 # Filter by source
 antikit ls --source official
+antikit ls --source claudekit
+
+# Text Mode (Non-interactive, good for scripting)
+antikit ls --text
 ```
 
-#### Install a skill
+### ⬇️ Installation & Updates
 
-Automatically installs dependencies defined in `SKILL.md`.
+**Install Skills**
+Automatically resolves and installs dependencies defined in `SKILL.md`.
 
 ```bash
 antikit install <skill-name>
-# or
-antikit i <skill-name>
+# Alias: antikit i <skill-name>
 
-# Force overwrite if exists
+# Force re-install
 antikit install <skill-name> --force
 ```
 
-#### Upgrade installed skills
-
-Update your local skills to the latest version from their sources.
+**Upgrade Skills**
+Keep your skills up-to-date with one command.
 
 ```bash
-# Upgrade all installed skills
+# Upgrade all installed skills (Interactive confirmation)
 antikit upgrade
-# or
-antikit ug
+# Alias: antikit ug
 
 # Upgrade a specific skill
 antikit upgrade <skill-name>
 
-# Upgrade without confirmation (good for scripts)
+# Upgrade all without confirmation (CI/Script mode)
 antikit upgrade --yes
 ```
 
-#### List installed local skills
+**Manage Local Skills**
 
 ```bash
+# List locally installed skills
 antikit local
-# or
-antikit l
-```
+# Alias: antikit l
 
-#### Remove a skill
-
-```bash
+# Remove a skill
 antikit remove <skill-name>
-# or
-antikit rm <skill-name>
+# Alias: antikit rm <skill-name>
 ```
 
----
+### 📡 Source Management
 
-### 📡 Manage Sources
+You can fetch skills from multiple repositories, including monorepos with sub-directories.
 
-You can fetch skills from multiple GitHub repositories, even from sub-directories.
+**List Sources**
 
 ```bash
-# List configured sources
 antikit source list
+```
 
-# Add a standard Repo source (GitHub owner/repo)
-antikit source add vunamhung/antiskills
+**Add Sources**
 
-# Add a source from a SUB-DIRECTORY (e.g. monorepo)
+```bash
+# Add a Public/Private GitHub Repo
+antikit source add owner/repo-name
+
+# Add from a specific Sub-directory (e.g. monorepo)
 antikit source add mrgoonie/claudekit-skills --path .claude/skills --name claudekit
 
-# Add with a custom name
-antikit source add vunamhung/private-skills --name private
-
-# Set a default source
-antikit source default private
-
-# Remove a source
-antikit source remove private
+# Add with a custom alias
+antikit source add my-org/private-skills --name work
 ```
 
----
+**Manage Sources**
 
-### 🔄 Self Update
+```bash
+# Set a default source for basic installs
+antikit source default work
 
-Update the `antikit` CLI tool itself to the latest version.
+# Remove a source
+antikit source remove work
+```
+
+### ⚙️ Configuration
+
+Manage your local configuration and credentials.
+
+```bash
+# View current config (masked token)
+antikit config list
+
+# Update GitHub Token
+antikit config set-token <new_token>
+
+# Remove Token
+antikit config remove-token
+```
+
+### 🔄 Tool Maintenance
+
+**Update CLI**
+Update `antikit` itself to the latest version.
 
 ```bash
 antikit update
+# Alias: antikit up
 ```
-
-_Note: You will also be notified automatically if a new version is available when running any command._
 
 ---
 
-## Skill Development
+## 🛠 Skill Development
 
 ### Skill Structure
 
-A skill is a directory containing a `SKILL.md` file.
+A skill is simply a directory containing a `SKILL.md` (metadata & instructions) and any associated files.
 
 ### Defining Version & Dependencies
 
-You can specify version and dependencies in the `SKILL.md` frontmatter.
+Add YAML frontmatter to your `SKILL.md` to enable versioning and automatic dependency installation.
 
 ```yaml
 ---
-name: my-skill
-description: A powerful skill that needs helpers
-version: 1.0.1
+name: my-complex-skill
+description: Performs magic operations
+version: 1.2.0
 dependencies:
-  - sql-helper
-  - python-runner
+  - simple-helper-skill
+  - another-dependency
 ---
-# My Skill Content
+# Skill Instructions
 ...
 ```
-
----
-
-### 🔐 Authentication & Private Repos
-
-To increase GitHub API rate limits or **access private repositories**, you need to configure a Personal Access Token.
-
-1.  **Create a Token**: [Click here](https://github.com/settings/tokens/new?description=antikit-cli&scopes=repo) to generate a new token.
-    - **Scope**: Select `repo` (Full control of private repositories) if you plan to use private skills. Otherwise `public_repo` is enough.
-2.  **Set Token**:
-
-```bash
-# Set your token
-antikit config set-token ghp_xxxxxxxxxxxx
-
-# Verify configuration
-antikit config list
-```
-
-Once configured, `antikit` will automatically use this token for all GitHub requests, enabling access to your private skill repositories.
-
-> **Note:** Your token is stored locally in `~/.antikit/config.json`.
 
 ---
 
