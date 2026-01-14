@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/vunamhung/antikit/compare/v1.6.0...v1.7.0) (2026-01-14)
+
+
+### Features
+
+* **list:** enhance interactive UX with source grouping and sorting ([ef332c2](https://github.com/vunamhung/antikit/commit/ef332c2401d81ed2a9530a8eee79e8a4dcd04842))
+
 # [1.6.0](https://github.com/vunamhung/antikit/compare/v1.5.0...v1.6.0) (2026-01-14)
 
 
