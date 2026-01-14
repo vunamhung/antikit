@@ -173,7 +173,25 @@ async function fetchSkillsFromSource(source) {
   return skills;
 }
 
-// ... (fetchRemoteSkills remains same)
+/**
+ * Fetch list of skills from all configured sources
+ */
+export async function fetchRemoteSkills(sourceName = null) {
+  const sources = getSources();
+
+  // Filter by source name if provided
+  const targetSources = sourceName ? sources.filter(s => s.name === sourceName) : sources;
+
+  if (targetSources.length === 0) {
+    throw new Error(`Source "${sourceName}" not found.`);
+  }
+
+  // Fetch from all sources in parallel
+  const results = await Promise.all(targetSources.map(source => fetchSkillsFromSource(source)));
+
+  // Flatten and return all skills
+  return results.flat();
+}
 
 /**
  * Fetch SKILL.md content for a specific skill
