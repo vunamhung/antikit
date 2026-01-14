@@ -71,14 +71,14 @@ export async function listRemoteSkills(options) {
     );
     infoSpinner.stop();
 
-    // Interactive mode - show selection menu
-    if (options.interactive) {
-      await interactiveInstall(skillsWithInfo);
+    // Check if explicitly requested text mode or non-interactive environment
+    if (options.text || !process.stdout.isTTY) {
+      displaySkillsList(skillsWithInfo);
       return;
     }
 
-    // Display list
-    displaySkillsList(skillsWithInfo);
+    // Default to Interactive mode
+    await interactiveInstall(skillsWithInfo);
   } catch (error) {
     spinner.fail('Failed to fetch skills');
     console.error(chalk.red(error.message));

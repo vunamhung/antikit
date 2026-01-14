@@ -34,6 +34,7 @@ program
   .alias('ls')
   .description('List available skills from remote repositories')
   .option('-s, --search <query>', 'Search skills by name')
+  .option('-i, --interactive', 'Interactive mode (default)')
   .option('-t, --text', 'Show as text list (non-interactive)')
   .option('--source <name>', 'Filter by source name')
   .action(listRemoteSkills);
