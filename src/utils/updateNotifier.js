@@ -72,7 +72,7 @@ export function checkForUpdates(packageName, currentVersion) {
     // Register to show notification after command completes (only once)
     if (!listenerRegistered) {
         listenerRegistered = true;
-        process.on('beforeExit', () => {
+        process.on('exit', () => {
             if (pendingNotification) {
                 displayUpdateNotification(
                     pendingNotification.packageName,
