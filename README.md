@@ -70,6 +70,14 @@ antikit ls --source claudekit
 antikit ls --text
 ```
 
+**View Skill Documentation**
+Read the `SKILL.md` content directly in your terminal (supports local and remote).
+
+```bash
+antikit info <skill-name>
+# Alias: antikit doc <skill-name>
+```
+
 ### ⬇️ Installation & Updates
 
 **Install Skills**
@@ -191,6 +199,16 @@ dependencies:
 ---
 # Skill Instructions
 ...
+```
+
+### Validator
+
+Check if your `SKILL.md` is valid and ready for publishing.
+
+```bash
+antikit validate
+# or check specific path
+antikit validate ./path/to/skill
 ```
 
 ---
