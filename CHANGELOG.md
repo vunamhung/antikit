@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/vunamhung/antikit/compare/v1.3.1...v1.4.0) (2026-01-14)
+
+
+### Features
+
+* **cli:** add update command for self-updating ([e12cfeb](https://github.com/vunamhung/antikit/commit/e12cfeb14e0a1c9892aab1f9fdac9583651ebdbf))
+
 ## [1.3.1](https://github.com/vunamhung/antikit/compare/v1.3.0...v1.3.1) (2026-01-14)
 
 
