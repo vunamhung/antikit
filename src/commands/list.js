@@ -47,10 +47,22 @@ export async function listRemoteSkills(options) {
     const infoSpinner = ora('Fetching skill info...').start();
     const skillsWithInfo = await Promise.all(
       skills.map(async skill => {
-        // Pass basePath to fetch correct SKILL.md location
-        const info = await fetchSkillInfo(skill.name, skill.owner, skill.repo, skill.basePath);
-        const description = info ? info.description : null;
-        const remoteVersion = info ? info.version : '0.0.0';
+        let description = skill.description;
+        let remoteVersion = skill.version || '0.0.0';
+
+        // Only fetch info if not already fetched (REST fallback)
+        if (description === undefined || description === null) {
+          // Pass basePath and branch to fetch correct SKILL.md location optimized
+          const info = await fetchSkillInfo(
+            skill.name,
+            skill.owner,
+            skill.repo,
+            skill.basePath,
+            skill.branch
+          );
+          description = info ? info.description : null;
+          remoteVersion = info ? info.version : '0.0.0';
+        }
 
         const installed = skillExists(skill.name);
         let updateAvailable = false;
