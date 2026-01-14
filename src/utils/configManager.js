@@ -20,6 +20,13 @@ const DEFAULT_CONFIG = {
       repo: 'claudekit-skills',
       branch: 'main',
       path: '.claude/skills'
+    },
+    {
+      name: 'ui-ux-pro',
+      owner: 'nextlevelbuilder',
+      repo: 'ui-ux-pro-max-skill',
+      branch: 'main',
+      path: '.claude/skills'
     }
   ]
 };
