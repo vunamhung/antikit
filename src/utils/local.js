@@ -1,19 +1,28 @@
 import { existsSync, readdirSync, readFileSync, rmSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { CONFIG } from '../config.js';
+import { MAX_DIRECTORY_DEPTH, SKILL_MD } from './constants.js';
+import { debug } from './logger.js';
 
 /**
  * Find local skills directory by traversing up from cwd
+ * Limited to MAX_DIRECTORY_DEPTH to prevent potential infinite loops
  */
 export function findLocalSkillsDir() {
   let dir = process.cwd();
+  let depth = 0;
 
-  while (dir !== '/') {
+  while (dir !== '/' && depth < MAX_DIRECTORY_DEPTH) {
     const skillsPath = join(dir, CONFIG.LOCAL_SKILLS_DIR);
     if (existsSync(skillsPath)) {
       return skillsPath;
     }
     dir = join(dir, '..');
+    depth++;
+  }
+
+  if (depth >= MAX_DIRECTORY_DEPTH) {
+    debug('Max directory depth reached while searching for skills directory');
   }
 
   return null;
@@ -51,7 +60,7 @@ export function getLocalSkills() {
     .filter(entry => entry.isDirectory() && !entry.name.startsWith('.'))
     .map(entry => {
       const skillPath = join(skillsDir, entry.name);
-      const skillMdPath = join(skillPath, 'SKILL.md');
+      const skillMdPath = join(skillPath, SKILL_MD);
 
       let description = null;
       if (existsSync(skillMdPath)) {

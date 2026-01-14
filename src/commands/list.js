@@ -7,17 +7,8 @@ import { skillExists, getOrCreateSkillsDir } from '../utils/local.js';
 import { installSkill } from './install.js';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
-
-function compareVersions(v1, v2) {
-  if (!v1 || !v2) return 0;
-  const p1 = v1.split('.').map(Number);
-  const p2 = v2.split('.').map(Number);
-  for (let i = 0; i < 3; i++) {
-    if ((p1[i] || 0) > (p2[i] || 0)) return 1;
-    if ((p1[i] || 0) < (p2[i] || 0)) return -1;
-  }
-  return 0;
-}
+import { compareVersions, DEFAULT_VERSION } from '../utils/version.js';
+import { METADATA_FILE, OFFICIAL_SOURCE } from '../utils/constants.js';
 
 export async function listRemoteSkills(options) {
   const sourceName = options.source || null;
@@ -49,7 +40,7 @@ export async function listRemoteSkills(options) {
     const skillsWithInfo = await Promise.all(
       skills.map(async skill => {
         let description = skill.description;
-        let remoteVersion = skill.version || '0.0.0';
+        let remoteVersion = skill.version || DEFAULT_VERSION;
 
         // Only fetch info if not already fetched (REST fallback)
         if (description === undefined || description === null) {
@@ -62,19 +53,19 @@ export async function listRemoteSkills(options) {
             skill.branch
           );
           description = info ? info.description : null;
-          remoteVersion = info ? info.version : '0.0.0';
+          remoteVersion = info ? info.version : DEFAULT_VERSION;
         }
 
         const installed = skillExists(skill.name);
         let updateAvailable = false;
-        let localVersion = '0.0.0';
+        let localVersion = DEFAULT_VERSION;
 
         if (installed) {
           try {
-            const metaPath = join(skillsDir, skill.name, '.antikit-skill.json');
+            const metaPath = join(skillsDir, skill.name, METADATA_FILE);
             if (existsSync(metaPath)) {
               const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
-              localVersion = meta.version || '0.0.0';
+              localVersion = meta.version || DEFAULT_VERSION;
               updateAvailable = compareVersions(remoteVersion, localVersion) > 0;
             }
           } catch {}
@@ -118,8 +109,8 @@ function displaySkillsList(skills) {
 
   // Sort: Official first, then Source, then Name
   skills.sort((a, b) => {
-    if (a.source === 'official' && b.source !== 'official') return -1;
-    if (b.source === 'official' && a.source !== 'official') return 1;
+    if (a.source === OFFICIAL_SOURCE && b.source !== OFFICIAL_SOURCE) return -1;
+    if (b.source === OFFICIAL_SOURCE && a.source !== OFFICIAL_SOURCE) return 1;
     if (a.source !== b.source) return a.source.localeCompare(b.source);
     return a.name.localeCompare(b.name);
   });
@@ -130,7 +121,7 @@ function displaySkillsList(skills) {
       status = skill.updateAvailable ? chalk.yellow('Update') : chalk.green('Installed');
     }
 
-    let versionDisplay = skill.remoteVersion || '0.0.0';
+    let versionDisplay = skill.remoteVersion || DEFAULT_VERSION;
     if (skill.installed && skill.localVersion) {
       if (skill.updateAvailable) {
         versionDisplay = `${chalk.dim(skill.localVersion)}→${chalk.yellow(skill.remoteVersion)}`;
@@ -159,8 +150,8 @@ function displaySkillsList(skills) {
 async function interactiveInstall(skills) {
   // Sort skills by Source (Official first) then Name
   skills.sort((a, b) => {
-    if (a.source === 'official' && b.source !== 'official') return -1;
-    if (b.source === 'official' && a.source !== 'official') return 1;
+    if (a.source === OFFICIAL_SOURCE && b.source !== OFFICIAL_SOURCE) return -1;
+    if (b.source === OFFICIAL_SOURCE && a.source !== OFFICIAL_SOURCE) return 1;
     if (a.source !== b.source) return a.source.localeCompare(b.source);
     return a.name.localeCompare(b.name);
   });

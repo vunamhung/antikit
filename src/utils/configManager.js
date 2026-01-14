@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
+import { OFFICIAL_SOURCE, DEFAULT_BRANCH } from './constants.js';
 
 const CONFIG_DIR = join(homedir(), '.antikit');
 const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
@@ -8,24 +9,24 @@ const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
 const DEFAULT_CONFIG = {
   sources: [
     {
-      name: 'official',
+      name: OFFICIAL_SOURCE,
       owner: 'vunamhung',
       repo: 'antiskills',
-      branch: 'main',
+      branch: DEFAULT_BRANCH,
       default: true
     },
     {
       name: 'claudekit',
       owner: 'mrgoonie',
       repo: 'claudekit-skills',
-      branch: 'main',
+      branch: DEFAULT_BRANCH,
       path: '.claude/skills'
     },
     {
       name: 'ui-ux-pro',
       owner: 'nextlevelbuilder',
       repo: 'ui-ux-pro-max-skill',
-      branch: 'main',
+      branch: DEFAULT_BRANCH,
       path: '.claude/skills'
     }
   ]
@@ -76,8 +77,8 @@ export function getSources() {
 
   // Enforce 'official' source always at the top
   return sources.sort((a, b) => {
-    if (a.name === 'official') return -1;
-    if (b.name === 'official') return 1;
+    if (a.name === OFFICIAL_SOURCE) return -1;
+    if (b.name === OFFICIAL_SOURCE) return 1;
     return 0;
   });
 }
@@ -85,7 +86,7 @@ export function getSources() {
 /**
  * Add a new source
  */
-export function addSource(name, owner, repo, branch = 'main', path = null) {
+export function addSource(name, owner, repo, branch = DEFAULT_BRANCH, path = null) {
   const config = loadConfig();
 
   // Check if source with same name exists

@@ -1,11 +1,15 @@
 import chalk from 'chalk';
 import ora from 'ora';
 import { execSync } from 'child_process';
-import { existsSync, mkdirSync, cpSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, cpSync, rmSync, writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { getOrCreateSkillsDir, skillExists } from '../utils/local.js';
 import { fetchRemoteSkills, getSkillCloneUrl } from '../utils/github.js';
+import { DEFAULT_VERSION, parseVersionFromContent } from '../utils/version.js';
+import { METADATA_FILE, SKILL_MD } from '../utils/constants.js';
+import { debug } from '../utils/logger.js';
+import { AntikitError, ErrorCodes } from '../utils/errors.js';
 
 const CACHE_DIR = join(homedir(), '.antikit');
 
@@ -81,10 +85,8 @@ export async function installSkill(skillName, options = {}) {
 
     // --- Check dependencies ---
     try {
-      const mdPath = join(sourcePath, 'SKILL.md');
+      const mdPath = join(sourcePath, SKILL_MD);
       if (existsSync(mdPath)) {
-        // Import locally to avoid cluttering top imports if possible, or just use fs
-        const { readFileSync } = await import('fs');
         const content = readFileSync(mdPath, 'utf-8');
 
         // Parse frontmatter dependencies
@@ -136,7 +138,7 @@ export async function installSkill(skillName, options = {}) {
       }
     } catch (e) {
       // Dep check failed, but continue installing main skill
-      // console.error(e);
+      debug('Dependency check failed:', e.message);
     }
 
     if (options.force && existsSync(destPath)) {
@@ -147,15 +149,11 @@ export async function installSkill(skillName, options = {}) {
 
     // Save skill metadata for future upgrades
     try {
-      let version = '0.0.0';
-      const mdPath = join(destPath, 'SKILL.md');
+      let version = DEFAULT_VERSION;
+      const mdPath = join(destPath, SKILL_MD);
       if (existsSync(mdPath)) {
-        // We likely already imported readFileSync if inside try block,
-        // but for safety use dynamic import or assume imported
-        const { readFileSync } = await import('fs');
         const content = readFileSync(mdPath, 'utf-8');
-        const vMatch = content.match(/^version:\s*(.+)/m);
-        if (vMatch) version = vMatch[1].trim();
+        version = parseVersionFromContent(content);
       }
 
       const metadata = {
@@ -168,9 +166,9 @@ export async function installSkill(skillName, options = {}) {
         version,
         installedAt: Date.now()
       };
-      writeFileSync(join(destPath, '.antikit-skill.json'), JSON.stringify(metadata, null, 2));
+      writeFileSync(join(destPath, METADATA_FILE), JSON.stringify(metadata, null, 2));
     } catch (e) {
-      // Ignore metadata write error, not critical
+      debug('Failed to write metadata:', e.message);
     }
 
     // Cleanup temp

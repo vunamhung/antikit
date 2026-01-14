@@ -1,7 +1,8 @@
 import chalk from 'chalk';
 import { getSources, getToken } from './configManager.js';
-
-const GITHUB_API = 'https://api.github.com';
+import { debug } from './logger.js';
+import { GITHUB_API, GITHUB_GRAPHQL, GITHUB_RAW, DEFAULT_BRANCH } from './constants.js';
+import { DEFAULT_VERSION } from './version.js';
 
 // Global flag to prevent duplicate rate limit logs
 let hasLoggedRateLimit = false;
@@ -64,11 +65,11 @@ async function fetchSkillsViaGraphQL(source, token) {
     }
     `;
 
-  const branch = source.branch || 'main';
+  const branch = source.branch || DEFAULT_BRANCH;
   const expression = source.path ? `${branch}:${source.path}` : `${branch}:`;
 
   try {
-    const response = await fetch('https://api.github.com/graphql', {
+    const response = await fetch(GITHUB_GRAPHQL, {
       method: 'POST',
       headers: {
         Authorization: `token ${token}`,
@@ -96,7 +97,7 @@ async function fetchSkillsViaGraphQL(source, token) {
       .filter(item => item.type === 'tree' && !item.name.startsWith('.'))
       .map(item => {
         let description = null;
-        let version = '0.0.0';
+        let version = DEFAULT_VERSION;
 
         const skillFile = item.object.file && item.object.file[0];
         if (skillFile && skillFile.object && skillFile.object.text) {
@@ -118,14 +119,15 @@ async function fetchSkillsViaGraphQL(source, token) {
           source: source.name,
           owner: source.owner,
           repo: source.repo,
-          branch: source.branch || 'main',
+          branch: source.branch || DEFAULT_BRANCH,
           basePath: source.path,
           description,
           version
         };
       });
   } catch (e) {
-    return null; // Fallback
+    debug('GraphQL fetch failed:', e.message);
+    return null; // Fallback to REST
   }
 }
 
@@ -153,8 +155,8 @@ async function fetchSkillsFromSource(source) {
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
 
-    // Check for rate limit
-    if (response.status === 403 && data.message.includes('rate limit')) {
+    // Check for rate limit (with null-safe access)
+    if (response.status === 403 && data.message?.includes('rate limit')) {
       logRateLimitError();
     }
 
@@ -182,7 +184,7 @@ async function fetchSkillsFromSource(source) {
       source: source.name,
       owner: source.owner,
       repo: source.repo,
-      branch: source.branch || 'main',
+      branch: source.branch || DEFAULT_BRANCH,
       basePath: source.path
     }));
 
@@ -225,7 +227,7 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
 
   // Optimized: Use Raw URL if branch is known
   if (branch) {
-    let rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}`;
+    let rawUrl = `${GITHUB_RAW}/${owner}/${repo}/${branch}`;
     if (path) rawUrl += `/${path}`;
     rawUrl += `/${skillName}/SKILL.md`;
 
@@ -236,7 +238,9 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
       if (res.ok) {
         content = await res.text();
       }
-    } catch (e) {}
+    } catch (e) {
+      debug('Raw URL fetch failed:', e.message);
+    }
   }
 
   // Fallback: Use API
@@ -258,8 +262,10 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
         // But simpler just to ignore or log if we strictly check msg
         try {
           const d = await response.json();
-          if (d.message.includes('rate limit')) logRateLimitError();
-        } catch {}
+          if (d.message?.includes('rate limit')) logRateLimitError();
+        } catch (e) {
+          debug('Rate limit check failed:', e.message);
+        }
       }
       return null;
     }
@@ -276,12 +282,12 @@ export async function fetchSkillInfo(skillName, owner, repo, path = null, branch
 
     return {
       description: descMatch ? descMatch[1].trim() : null,
-      version: versionMatch ? versionMatch[1].trim() : '0.0.0',
+      version: versionMatch ? versionMatch[1].trim() : DEFAULT_VERSION,
       content // Return raw content
     };
   }
 
-  return { description: null, version: '0.0.0', content };
+  return { description: null, version: DEFAULT_VERSION, content };
 }
 
 /**

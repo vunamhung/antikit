@@ -4,6 +4,8 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 import chalk from 'chalk';
+import { compareVersions } from './version.js';
+import { debug } from './logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CONFIG_DIR = join(homedir(), '.antikit');
@@ -13,17 +15,12 @@ const UPDATE_CHECK_FILE = join(CONFIG_DIR, 'update-check.json');
 const CHECK_INTERVAL = 1000 * 60 * 60 * 6;
 
 /**
- * Compare semantic versions
+ * Ensure config directory exists
  */
-function compareVersions(v1, v2) {
-  const parts1 = v1.split('.').map(Number);
-  const parts2 = v2.split('.').map(Number);
-
-  for (let i = 0; i < 3; i++) {
-    if (parts1[i] > parts2[i]) return 1;
-    if (parts1[i] < parts2[i]) return -1;
+function ensureConfigDir() {
+  if (!existsSync(CONFIG_DIR)) {
+    mkdirSync(CONFIG_DIR, { recursive: true });
   }
-  return 0;
 }
 
 /**
@@ -33,7 +30,45 @@ function loadUpdateCache() {
   try {
     if (!existsSync(UPDATE_CHECK_FILE)) return null;
     return JSON.parse(readFileSync(UPDATE_CHECK_FILE, 'utf-8'));
-  } catch {
+  } catch (e) {
+    debug('Failed to load update cache:', e.message);
+    return null;
+  }
+}
+
+/**
+ * Save update cache data
+ */
+function saveUpdateCache(data) {
+  try {
+    ensureConfigDir();
+    writeFileSync(UPDATE_CHECK_FILE, JSON.stringify(data, null, 2));
+  } catch (e) {
+    debug('Failed to save update cache:', e.message);
+  }
+}
+
+/**
+ * Fetch latest version from npm registry
+ * @param {string} packageName
+ * @returns {Promise<string|null>}
+ */
+async function fetchLatestVersion(packageName) {
+  try {
+    const response = await fetch(`https://registry.npmjs.org/${packageName}/latest`, {
+      headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      debug('NPM registry returned non-ok status:', response.status);
+      return null;
+    }
+
+    const data = await response.json();
+    return data.version || null;
+  } catch (e) {
+    debug('Failed to fetch latest version:', e.message);
     return null;
   }
 }
@@ -103,8 +138,8 @@ export function checkForUpdates(packageName, currentVersion) {
         stdio: 'ignore'
       });
       child.unref();
-    } catch {
-      // Ignore spawn errors
+    } catch (e) {
+      debug('Failed to spawn update checker:', e.message);
     }
   }
 }
