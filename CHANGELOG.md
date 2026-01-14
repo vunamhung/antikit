@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.12.4](https://github.com/vunamhung/antikit/compare/v1.12.3...v1.12.4) (2026-01-14)
+
+### Styles
+
+- **cli:** auto-adjust local skills table width to fit terminal ([162fb43](https://github.com/vunamhung/antikit/commit/162fb430f2f829de5e428bba8efe03e3c9c4fd1d))
+
 ## [1.12.3](https://github.com/vunamhung/antikit/compare/v1.12.2...v1.12.3) (2026-01-14)
 
 ### Styles
