@@ -25,6 +25,7 @@ export async function installSkill(skillName, options = {}) {
   try {
     let owner = options.owner;
     let repo = options.repo;
+    let basePath = options.path;
 
     // If owner/repo not provided, search in all sources
     if (!owner || !repo) {
@@ -39,6 +40,7 @@ export async function installSkill(skillName, options = {}) {
 
       owner = skillInfo.owner;
       repo = skillInfo.repo;
+      basePath = skillInfo.basePath;
       spinner.text = `Found in ${chalk.magenta(skillInfo.source)}, cloning...`;
     } else {
       spinner.text = `Cloning from ${owner}/${repo}...`;
@@ -56,13 +58,17 @@ export async function installSkill(skillName, options = {}) {
       stdio: 'pipe'
     });
 
-    execSync(`git sparse-checkout set ${skillName}`, {
+    // Determine exact path of skill in repo
+    const repoSkillPath = basePath ? `${basePath}/${skillName}` : skillName;
+
+    execSync(`git sparse-checkout set ${repoSkillPath}`, {
       cwd: join(tempDir, 'repo'),
       stdio: 'pipe'
     });
 
     // Copy skill to local
-    const sourcePath = join(tempDir, 'repo', skillName);
+    // Use split/join to handle OS path separators correctly for sourcePath
+    const sourcePath = join(tempDir, 'repo', ...repoSkillPath.split('/'));
     const destPath = join(skillsDir, skillName);
 
     // Check if skill folder exists in the repo
@@ -154,7 +160,11 @@ export async function installSkill(skillName, options = {}) {
 
       const metadata = {
         name: skillName,
-        source: { owner, repo },
+        source: {
+          owner,
+          repo,
+          ...(basePath ? { path: basePath } : {})
+        },
         version,
         installedAt: Date.now()
       };

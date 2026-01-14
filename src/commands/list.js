@@ -47,7 +47,8 @@ export async function listRemoteSkills(options) {
     const infoSpinner = ora('Fetching skill info...').start();
     const skillsWithInfo = await Promise.all(
       skills.map(async skill => {
-        const info = await fetchSkillInfo(skill.name, skill.owner, skill.repo);
+        // Pass basePath to fetch correct SKILL.md location
+        const info = await fetchSkillInfo(skill.name, skill.owner, skill.repo, skill.basePath);
         const description = info ? info.description : null;
         const remoteVersion = info ? info.version : '0.0.0';
 
@@ -192,7 +193,12 @@ async function interactiveInstall(skills) {
   for (const skill of selected) {
     // Force install if updating
     const force = skill.installed && skill.updateAvailable;
-    await installSkill(skill.name, { force, owner: skill.owner, repo: skill.repo });
+    await installSkill(skill.name, {
+      force,
+      owner: skill.owner,
+      repo: skill.repo,
+      path: skill.basePath // Pass basePath to install
+    });
   }
 
   console.log();

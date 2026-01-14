@@ -6,7 +6,10 @@ const GITHUB_API = 'https://api.github.com';
  * Fetch list of skills from a specific source
  */
 async function fetchSkillsFromSource(source) {
-  const url = `${GITHUB_API}/repos/${source.owner}/${source.repo}/contents`;
+  let url = `${GITHUB_API}/repos/${source.owner}/${source.repo}/contents`;
+  if (source.path) {
+    url += `/${source.path}`;
+  }
 
   const response = await fetch(url, {
     headers: {
@@ -27,16 +30,21 @@ async function fetchSkillsFromSource(source) {
 
   const contents = await response.json();
 
+  if (!Array.isArray(contents)) {
+    return []; // Handle case where path points to file, not dir
+  }
+
   // Filter only directories (skills)
   const skills = contents
     .filter(item => item.type === 'dir' && !item.name.startsWith('.'))
     .map(item => ({
       name: item.name,
       url: item.html_url,
-      path: item.path,
+      path: item.path, // Full path in repo (e.g. .claude/skills/foo)
       source: source.name,
       owner: source.owner,
-      repo: source.repo
+      repo: source.repo,
+      basePath: source.path // Keep track of base path
     }));
 
   return skills;
@@ -65,7 +73,7 @@ export async function fetchRemoteSkills(sourceName = null) {
 /**
  * Fetch SKILL.md content for a specific skill
  */
-export async function fetchSkillInfo(skillName, owner, repo) {
+export async function fetchSkillInfo(skillName, owner, repo, path = null) {
   // If owner/repo not provided, search in all sources
   if (!owner || !repo) {
     const skills = await fetchRemoteSkills();
@@ -73,9 +81,14 @@ export async function fetchSkillInfo(skillName, owner, repo) {
     if (!skill) return null;
     owner = skill.owner;
     repo = skill.repo;
+    path = skill.basePath;
   }
 
-  const url = `${GITHUB_API}/repos/${owner}/${repo}/contents/${skillName}/SKILL.md`;
+  let url = `${GITHUB_API}/repos/${owner}/${repo}/contents`;
+  if (path) {
+    url += `/${path}`;
+  }
+  url += `/${skillName}/SKILL.md`;
 
   const response = await fetch(url, {
     headers: {

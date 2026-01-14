@@ -44,8 +44,9 @@ export function addNewSource(repoPath, options) {
     const [owner, repo] = parts;
     const name = options.name || repo;
     const branch = options.branch || 'main';
+    const path = options.path || null;
 
-    addSource(name, owner, repo, branch);
+    addSource(name, owner, repo, branch, path);
 
     console.log(chalk.green(`\n✓ Added source "${name}" (${owner}/${repo})`));
     console.log();

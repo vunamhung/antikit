@@ -99,6 +99,7 @@ sourceCmd
   .description('Add a new source (format: owner/repo)')
   .option('-n, --name <name>', 'Custom name for the source')
   .option('-b, --branch <branch>', 'Branch to use (default: main)')
+  .option('-p, --path <path>', 'Subpath in the repository (e.g. skills)')
   .action(addNewSource);
 
 sourceCmd

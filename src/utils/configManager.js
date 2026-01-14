@@ -64,7 +64,7 @@ export function getSources() {
 /**
  * Add a new source
  */
-export function addSource(name, owner, repo, branch = 'main') {
+export function addSource(name, owner, repo, branch = 'main', path = null) {
   const config = loadConfig();
 
   // Check if source with same name exists
@@ -73,19 +73,30 @@ export function addSource(name, owner, repo, branch = 'main') {
     throw new Error(`Source "${name}" already exists. Use a different name or remove it first.`);
   }
 
-  // Check if same repo already added
-  const sameRepo = config.sources.find(s => s.owner === owner && s.repo === repo);
+  // Check if same repo already added (allow same repo if path is different?)
+  // Let's allow same repo if path is different, useful for monorepos!
+  const sameRepo = config.sources.find(
+    s => s.owner === owner && s.repo === repo && s.path === path
+  );
   if (sameRepo) {
-    throw new Error(`Repository "${owner}/${repo}" is already added as "${sameRepo.name}".`);
+    throw new Error(
+      `Repository "${owner}/${repo}" ${path ? `(path: ${path}) ` : ''}is already added as "${sameRepo.name}".`
+    );
   }
 
-  config.sources.push({
+  const newSource = {
     name,
     owner,
     repo,
     branch,
     default: false
-  });
+  };
+
+  if (path) {
+    newSource.path = path;
+  }
+
+  config.sources.push(newSource);
 
   saveConfig(config);
   return config.sources;
