@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/vunamhung/antikit/compare/v1.0.1...v1.1.0) (2026-01-14)
+
+
+### Features
+
+* enable CI automated releases ([beb492f](https://github.com/vunamhung/antikit/commit/beb492fcb5abcfb49e9e330e1a30b46f0393a893))
+
 # 1.0.0 (2026-01-14)
 
 
