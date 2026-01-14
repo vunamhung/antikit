@@ -1,3 +1,9 @@
+## [1.10.1](https://github.com/vunamhung/antikit/compare/v1.10.0...v1.10.1) (2026-01-14)
+
+### Performance Improvements
+
+- **github:** optimize skill fetching via GraphQL (with token) and Raw URL (fallback) ([afd4817](https://github.com/vunamhung/antikit/commit/afd4817c7abaea5011f40542bd8e69d24fd6e449))
+
 # [1.10.0](https://github.com/vunamhung/antikit/compare/v1.9.1...v1.10.0) (2026-01-14)
 
 ### Features
