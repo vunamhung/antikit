@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/vunamhung/antikit/compare/v1.2.0...v1.3.0) (2026-01-14)
+
+
+### Features
+
+* **update:** add update notification when new version available ([cbdc590](https://github.com/vunamhung/antikit/commit/cbdc590413511f4963214ea5f779f49dd5e4b62a))
+
 # [1.2.0](https://github.com/vunamhung/antikit/compare/v1.1.1...v1.2.0) (2026-01-14)
 
 
