@@ -1,3 +1,9 @@
+# [1.10.0](https://github.com/vunamhung/antikit/compare/v1.9.1...v1.10.0) (2026-01-14)
+
+### Features
+
+- **cli:** add config command to manage github token ([239cf51](https://github.com/vunamhung/antikit/commit/239cf51829207469fd2136500c6843ef8aca0cce))
+
 ## [1.9.1](https://github.com/vunamhung/antikit/compare/v1.9.0...v1.9.1) (2026-01-14)
 
 ### Bug Fixes
