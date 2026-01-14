@@ -1,5 +1,8 @@
 import chalk from 'chalk';
+import Table from 'cli-table3';
 import { getLocalSkills, findLocalSkillsDir } from '../utils/local.js';
+import fs from 'fs';
+import path from 'path';
 
 export async function listLocalSkills() {
   const skillsDir = findLocalSkillsDir();
@@ -18,16 +21,41 @@ export async function listLocalSkills() {
     return;
   }
 
-  console.log(chalk.bold(`Installed Skills (${skills.length}):`));
-  console.log(chalk.dim('─'.repeat(60)));
+  const table = new Table({
+    head: [chalk.cyan('Skill Name'), chalk.cyan('Version'), chalk.cyan('Description')],
+    colWidths: [25, 12, 60],
+    wordWrap: true,
+    style: { head: [], border: [] }
+  });
 
-  for (const skill of skills) {
-    console.log(`  ${chalk.cyan.bold(skill.name)}`);
-    if (skill.description) {
-      console.log(`   ${chalk.dim(skill.description)}`);
-    }
-  }
+  skills.forEach(skill => {
+    let version = 'local';
 
+    // Try read .antikit-skill.json (installed metadata)
+    try {
+      const metaPath = path.join(skill.path, '.antikit-skill.json');
+      if (fs.existsSync(metaPath)) {
+        const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+        if (meta.version) version = meta.version;
+      } else {
+        // Try read SKILL.md frontmatter
+        const skillRef = path.join(skill.path, 'SKILL.md');
+        if (fs.existsSync(skillRef)) {
+          const content = fs.readFileSync(skillRef, 'utf8');
+          const match = content.match(/version:\s*(.+)/);
+          if (match) version = match[1].trim();
+        }
+      }
+    } catch {}
+
+    table.push([
+      chalk.bold.green(skill.name),
+      version === 'local' ? chalk.dim(version) : chalk.yellow(version),
+      skill.description || chalk.dim('No description')
+    ]);
+  });
+
+  console.log(chalk.bold(`\nInstalled Skills (${skills.length}) at ${chalk.gray(skillsDir)}`));
+  console.log(table.toString());
   console.log();
-  console.log(chalk.dim(`Skills directory: ${skillsDir}`));
 }
