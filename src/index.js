@@ -2,17 +2,21 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
+import { createRequire } from 'module';
 import { listRemoteSkills } from './commands/list.js';
 import { listLocalSkills } from './commands/local.js';
 import { installSkill } from './commands/install.js';
 import { removeSkill } from './commands/remove.js';
+
+const require = createRequire(import.meta.url);
+const pkg = require('../package.json');
 
 const program = new Command();
 
 program
   .name('antikit')
   .description('CLI tool to manage skills from antiskills repository')
-  .version('1.0.0');
+  .version(pkg.version);
 
 program
   .command('list')
