@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/index.js",
   "bin": {
-    "antikit": "./src/index.js"
+    "antikit": "src/index.js"
   },
   "scripts": {
     "test": "node src/index.js --help"
