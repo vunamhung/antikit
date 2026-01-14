@@ -7,6 +7,7 @@ import { listRemoteSkills } from './commands/list.js';
 import { listLocalSkills } from './commands/local.js';
 import { installSkill } from './commands/install.js';
 import { removeSkill } from './commands/remove.js';
+import { updateCli } from './commands/update.js';
 import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
 import { checkForUpdates } from './utils/updateNotifier.js';
 
@@ -51,6 +52,12 @@ program
   .alias('rm')
   .description('Remove an installed skill')
   .action(removeSkill);
+
+program
+  .command('update')
+  .alias('up')
+  .description('Update antikit to the latest version')
+  .action(updateCli);
 
 // Source management commands
 const sourceCmd = program
