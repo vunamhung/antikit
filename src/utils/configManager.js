@@ -13,6 +13,13 @@ const DEFAULT_CONFIG = {
       repo: 'antiskills',
       branch: 'main',
       default: true
+    },
+    {
+      name: 'claudekit',
+      owner: 'mrgoonie',
+      repo: 'claudekit-skills',
+      branch: 'main',
+      path: '.claude/skills'
     }
   ]
 };
@@ -58,7 +65,14 @@ export function saveConfig(config) {
  */
 export function getSources() {
   const config = loadConfig();
-  return config.sources || [];
+  const sources = config.sources || [];
+
+  // Enforce 'official' source always at the top
+  return sources.sort((a, b) => {
+    if (a.name === 'official') return -1;
+    if (b.name === 'official') return 1;
+    return 0;
+  });
 }
 
 /**
