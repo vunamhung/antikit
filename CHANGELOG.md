@@ -1,3 +1,9 @@
+## [1.10.2](https://github.com/vunamhung/antikit/compare/v1.10.1...v1.10.2) (2026-01-14)
+
+### Bug Fixes
+
+- **github:** restore fetchRemoteSkills function and finalize optimization ([9b477de](https://github.com/vunamhung/antikit/commit/9b477dedaa0a3b90de1da5b289f2ba51b1c6b9c7))
+
 ## [1.10.1](https://github.com/vunamhung/antikit/compare/v1.10.0...v1.10.1) (2026-01-14)
 
 ### Performance Improvements
