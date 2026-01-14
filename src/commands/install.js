@@ -3,9 +3,11 @@ import ora from 'ora';
 import { execSync } from 'child_process';
 import { existsSync, mkdirSync, cpSync, rmSync } from 'fs';
 import { join } from 'path';
-import { CONFIG } from '../config.js';
+import { homedir } from 'os';
 import { getOrCreateSkillsDir, skillExists } from '../utils/local.js';
-import { fetchRemoteSkills } from '../utils/github.js';
+import { fetchRemoteSkills, getSkillCloneUrl } from '../utils/github.js';
+
+const CACHE_DIR = join(homedir(), '.antikit');
 
 export async function installSkill(skillName, options = {}) {
     // Get or create skills directory
@@ -18,27 +20,38 @@ export async function installSkill(skillName, options = {}) {
         return;
     }
 
-    // Verify skill exists in remote
-    const spinner = ora(`Checking if "${skillName}" exists...`).start();
+    const spinner = ora(`Finding "${skillName}"...`).start();
 
     try {
-        const remoteSkills = await fetchRemoteSkills();
-        const skillInfo = remoteSkills.find(s => s.name === skillName);
+        let owner = options.owner;
+        let repo = options.repo;
 
-        if (!skillInfo) {
-            spinner.fail(`Skill "${skillName}" not found in remote repository`);
-            console.log(chalk.dim(`Use ${chalk.white('antikit list')} to see available skills`));
-            process.exit(1);
+        // If owner/repo not provided, search in all sources
+        if (!owner || !repo) {
+            const remoteSkills = await fetchRemoteSkills();
+            const skillInfo = remoteSkills.find(s => s.name === skillName);
+
+            if (!skillInfo) {
+                spinner.fail(`Skill "${skillName}" not found in any source`);
+                console.log(chalk.dim(`Use ${chalk.white('antikit list')} to see available skills`));
+                process.exit(1);
+            }
+
+            owner = skillInfo.owner;
+            repo = skillInfo.repo;
+            spinner.text = `Found in ${chalk.magenta(skillInfo.source)}, cloning...`;
+        } else {
+            spinner.text = `Cloning from ${owner}/${repo}...`;
         }
 
-        spinner.text = `Cloning ${skillName}...`;
-
         // Clone to temp directory
-        const tempDir = join(CONFIG.CACHE_DIR, 'temp', Date.now().toString());
+        const tempDir = join(CACHE_DIR, 'temp', Date.now().toString());
         mkdirSync(tempDir, { recursive: true });
 
+        const cloneUrl = getSkillCloneUrl(owner, repo);
+
         // Sparse checkout only the skill folder
-        execSync(`git clone --depth 1 --filter=blob:none --sparse ${CONFIG.REPO_URL} repo`, {
+        execSync(`git clone --depth 1 --filter=blob:none --sparse ${cloneUrl} repo`, {
             cwd: tempDir,
             stdio: 'pipe'
         });
@@ -52,6 +65,13 @@ export async function installSkill(skillName, options = {}) {
         const sourcePath = join(tempDir, 'repo', skillName);
         const destPath = join(skillsDir, skillName);
 
+        // Check if skill folder exists in the repo
+        if (!existsSync(sourcePath)) {
+            rmSync(tempDir, { recursive: true, force: true });
+            spinner.fail(`Skill "${skillName}" not found in ${owner}/${repo}`);
+            process.exit(1);
+        }
+
         if (options.force && existsSync(destPath)) {
             rmSync(destPath, { recursive: true, force: true });
         }
@@ -61,7 +81,7 @@ export async function installSkill(skillName, options = {}) {
         // Cleanup temp
         rmSync(tempDir, { recursive: true, force: true });
 
-        spinner.succeed(`Installed ${chalk.cyan.bold(skillName)}`);
+        spinner.succeed(`Installed ${chalk.cyan.bold(skillName)} from ${chalk.dim(`${owner}/${repo}`)}`);
         console.log(chalk.dim(`  → ${destPath}`));
 
     } catch (error) {
@@ -70,3 +90,4 @@ export async function installSkill(skillName, options = {}) {
         process.exit(1);
     }
 }
+

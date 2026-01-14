@@ -7,6 +7,7 @@ import { listRemoteSkills } from './commands/list.js';
 import { listLocalSkills } from './commands/local.js';
 import { installSkill } from './commands/install.js';
 import { removeSkill } from './commands/remove.js';
+import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
@@ -15,15 +16,16 @@ const program = new Command();
 
 program
   .name('antikit')
-  .description('CLI tool to manage skills from antiskills repository')
+  .description('CLI tool to manage skills from multiple repositories')
   .version(pkg.version);
 
 program
   .command('list')
   .alias('ls')
-  .description('List available skills from remote repository')
+  .description('List available skills from remote repositories')
   .option('-s, --search <query>', 'Search skills by name')
   .option('-i, --interactive', 'Interactive mode to select and install skills')
+  .option('--source <name>', 'Filter by source name')
   .action(listRemoteSkills);
 
 program
@@ -45,4 +47,35 @@ program
   .description('Remove an installed skill')
   .action(removeSkill);
 
+// Source management commands
+const sourceCmd = program
+  .command('source')
+  .alias('src')
+  .description('Manage skill sources (repositories)');
+
+sourceCmd
+  .command('list')
+  .alias('ls')
+  .description('List all configured sources')
+  .action(listSources);
+
+sourceCmd
+  .command('add <repo>')
+  .description('Add a new source (format: owner/repo)')
+  .option('-n, --name <name>', 'Custom name for the source')
+  .option('-b, --branch <branch>', 'Branch to use (default: main)')
+  .action(addNewSource);
+
+sourceCmd
+  .command('remove <name>')
+  .alias('rm')
+  .description('Remove a source by name')
+  .action(removeExistingSource);
+
+sourceCmd
+  .command('default <name>')
+  .description('Set default source')
+  .action(setDefault);
+
 program.parse();
+

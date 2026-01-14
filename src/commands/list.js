@@ -6,10 +6,11 @@ import { skillExists } from '../utils/local.js';
 import { installSkill } from './install.js';
 
 export async function listRemoteSkills(options) {
-    const spinner = ora('Fetching skills from remote...').start();
+    const sourceName = options.source || null;
+    const spinner = ora(`Fetching skills${sourceName ? ` from ${sourceName}` : ' from all sources'}...`).start();
 
     try {
-        let skills = await fetchRemoteSkills();
+        let skills = await fetchRemoteSkills(sourceName);
 
         // Filter by search query
         if (options.search) {
@@ -29,7 +30,7 @@ export async function listRemoteSkills(options) {
         const infoSpinner = ora('Fetching skill info...').start();
         const skillsWithInfo = await Promise.all(
             skills.map(async (skill) => {
-                const description = await fetchSkillInfo(skill.name);
+                const description = await fetchSkillInfo(skill.name, skill.owner, skill.repo);
                 const installed = skillExists(skill.name);
                 return { ...skill, description, installed };
             })
@@ -56,14 +57,25 @@ function displaySkillsList(skills) {
     console.log(chalk.bold('Available Skills:'));
     console.log(chalk.dim('─'.repeat(60)));
 
-    for (const skill of skills) {
-        const status = skill.installed
-            ? chalk.green(' ✓')
-            : chalk.dim('  ');
+    // Group by source
+    const bySource = skills.reduce((acc, skill) => {
+        const src = skill.source || 'unknown';
+        if (!acc[src]) acc[src] = [];
+        acc[src].push(skill);
+        return acc;
+    }, {});
 
-        console.log(`${status} ${chalk.cyan.bold(skill.name)}`);
-        if (skill.description) {
-            console.log(`   ${chalk.dim(skill.description)}`);
+    for (const [sourceName, sourceSkills] of Object.entries(bySource)) {
+        console.log(chalk.magenta.bold(`\n📦 ${sourceName}`));
+        for (const skill of sourceSkills) {
+            const status = skill.installed
+                ? chalk.green(' ✓')
+                : chalk.dim('  ');
+
+            console.log(`${status} ${chalk.cyan.bold(skill.name)}`);
+            if (skill.description) {
+                console.log(`     ${chalk.dim(skill.description)}`);
+            }
         }
     }
 
@@ -74,8 +86,8 @@ function displaySkillsList(skills) {
 async function interactiveInstall(skills) {
     // Prepare choices for checkbox
     const choices = skills.map(skill => ({
-        name: `${skill.installed ? chalk.green('✓') : ' '} ${chalk.cyan(skill.name)} ${skill.description ? chalk.dim('- ' + skill.description.slice(0, 50) + '...') : ''}`,
-        value: skill.name,
+        name: `${skill.installed ? chalk.green('✓') : ' '} ${chalk.cyan(skill.name)} ${chalk.dim(`[${skill.source}]`)} ${skill.description ? chalk.dim('- ' + skill.description.slice(0, 50) + '...') : ''}`,
+        value: skill,
         disabled: skill.installed ? '(installed)' : false
     }));
 
@@ -104,8 +116,8 @@ async function interactiveInstall(skills) {
 
     // Install selected skills
     console.log();
-    for (const skillName of selected) {
-        await installSkill(skillName, { force: false });
+    for (const skill of selected) {
+        await installSkill(skill.name, { force: false, owner: skill.owner, repo: skill.repo });
     }
 
     console.log();
