@@ -153,7 +153,7 @@ async function interactiveInstall(skills) {
     }
 
     if (skill.description) {
-      label += ` ${chalk.dim('- ' + skill.description.slice(0, 40) + '...')}`;
+      label += ` ${chalk.dim('- ' + skill.description.slice(0, 100) + (skill.description.length > 100 ? '...' : ''))}`;
     }
 
     choices.push({
