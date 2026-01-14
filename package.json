@@ -1,0 +1,27 @@
+{
+  "name": "antikit",
+  "version": "1.0.0",
+  "description": "CLI tool to manage skills from antiskills repository",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "antikit": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node src/index.js --help"
+  },
+  "keywords": [
+    "cli",
+    "skills",
+    "ai",
+    "agent"
+  ],
+  "author": "vunamhung",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "ora": "^8.1.1",
+    "simple-git": "^3.27.0"
+  }
+}
