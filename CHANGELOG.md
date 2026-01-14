@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/vunamhung/antikit/compare/v1.3.0...v1.3.1) (2026-01-14)
+
+
+### Bug Fixes
+
+* **update:** use process exit event to ensure notification display ([c936e39](https://github.com/vunamhung/antikit/commit/c936e39f27ab92db591e9863f03a2d986bf20fd2))
+
 # [1.3.0](https://github.com/vunamhung/antikit/compare/v1.2.0...v1.3.0) (2026-01-14)
 
 
