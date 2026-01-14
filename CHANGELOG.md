@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/vunamhung/antikit/compare/v1.5.0...v1.6.0) (2026-01-14)
+
+
+### Features
+
+* **list:** enhance interactive mode to detecting and prompting for skill updates ([27814da](https://github.com/vunamhung/antikit/commit/27814da6d29d4cceafce5fa6a49cde6d8e869821))
+
 # [1.5.0](https://github.com/vunamhung/antikit/compare/v1.4.0...v1.5.0) (2026-01-14)
 
 

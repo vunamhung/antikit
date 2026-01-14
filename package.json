@@ -1,6 +1,6 @@
 {
   "name": "antikit",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "CLI tool to manage AI agent skills from Anti Gravity skills repository",
   "type": "module",
   "main": "src/index.js",
