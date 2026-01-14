@@ -11,9 +11,13 @@ import { updateCli } from './commands/update.js';
 import { upgradeSkills } from './commands/upgrade.js';
 import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
 import { checkForUpdates } from './utils/updateNotifier.js';
+import { setupCompletion } from './utils/completion.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
+
+// Setup autocompletion (must run before commander)
+setupCompletion();
 
 // Check for updates (non-blocking)
 checkForUpdates(pkg.name, pkg.version);
@@ -30,7 +34,7 @@ program
   .alias('ls')
   .description('List available skills from remote repositories')
   .option('-s, --search <query>', 'Search skills by name')
-  .option('-i, --interactive', 'Interactive mode to select and install skills')
+  .option('-t, --text', 'Show as text list (non-interactive)')
   .option('--source <name>', 'Filter by source name')
   .action(listRemoteSkills);
 
@@ -65,6 +69,17 @@ program
   .description('Upgrade installed skills')
   .option('-y, --yes', 'Skip confirmation')
   .action(upgradeSkills);
+
+program
+  .command('completion')
+  .description('Setup autocomplete for your shell (zsh/bash)')
+  .action(() => {
+    console.log(chalk.bold('To install autocomplete:'));
+    console.log(chalk.cyan('1. Run this command to append the script to your config:'));
+    console.log('   antikit --completion >> ~/.zshrc  # For Zsh');
+    console.log('   antikit --completion >> ~/.bashrc # For Bash');
+    console.log(chalk.cyan('2. Restart your shell or source the file.'));
+  });
 
 // Source management commands
 const sourceCmd = program
