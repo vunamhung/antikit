@@ -1,3 +1,9 @@
+# [1.8.0](https://github.com/vunamhung/antikit/compare/v1.7.0...v1.8.0) (2026-01-14)
+
+### Features
+
+- **cli:** add shell autocompletion support via omelette ([7e78cf6](https://github.com/vunamhung/antikit/commit/7e78cf69af520c130224dfd6f45467b9676e9a46))
+
 # [1.7.0](https://github.com/vunamhung/antikit/compare/v1.6.0...v1.7.0) (2026-01-14)
 
 ### Features
