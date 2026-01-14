@@ -1,3 +1,9 @@
+## [1.8.1](https://github.com/vunamhung/antikit/compare/v1.8.0...v1.8.1) (2026-01-14)
+
+### Bug Fixes
+
+- **cli:** make list interactive by default and restore -i flag for compatibility ([ad0fa17](https://github.com/vunamhung/antikit/commit/ad0fa17b59b7f9117ca40114b2f374614a419cc9))
+
 # [1.8.0](https://github.com/vunamhung/antikit/compare/v1.7.0...v1.8.0) (2026-01-14)
 
 ### Features
