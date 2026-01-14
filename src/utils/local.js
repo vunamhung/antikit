@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync, rmSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, rmSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { CONFIG } from '../config.js';
 
@@ -17,6 +17,22 @@ export function findLocalSkillsDir() {
     }
 
     return null;
+}
+
+/**
+ * Get or create skills directory in current working directory
+ */
+export function getOrCreateSkillsDir() {
+    // First try to find existing
+    const existing = findLocalSkillsDir();
+    if (existing) {
+        return existing;
+    }
+
+    // Create in current directory
+    const newPath = join(process.cwd(), CONFIG.LOCAL_SKILLS_DIR);
+    mkdirSync(newPath, { recursive: true });
+    return newPath;
 }
 
 /**

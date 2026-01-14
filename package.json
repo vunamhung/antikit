@@ -1,6 +1,6 @@
 {
   "name": "antikit",
-  "version": "1.0.1",
+  "version": "0.0.0-development",
   "description": "CLI tool to manage AI agent skills from Anti Gravity skills repository",
   "type": "module",
   "main": "src/index.js",
@@ -8,7 +8,8 @@
     "antikit": "src/index.js"
   },
   "scripts": {
-    "test": "node src/index.js --help"
+    "test": "node src/index.js --help",
+    "semantic-release": "semantic-release"
   },
   "keywords": [
     "cli",
@@ -41,5 +42,10 @@
     "commander": "^12.1.0",
     "ora": "^8.1.1",
     "simple-git": "^3.27.0"
+  },
+  "devDependencies": {
+    "semantic-release": "^24.2.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1"
   }
 }

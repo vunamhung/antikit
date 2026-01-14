@@ -4,17 +4,12 @@ import { execSync } from 'child_process';
 import { existsSync, mkdirSync, cpSync, rmSync } from 'fs';
 import { join } from 'path';
 import { CONFIG } from '../config.js';
-import { findLocalSkillsDir, skillExists } from '../utils/local.js';
+import { getOrCreateSkillsDir, skillExists } from '../utils/local.js';
 import { fetchRemoteSkills } from '../utils/github.js';
 
-export async function installSkill(skillName, options) {
-    const skillsDir = findLocalSkillsDir();
-
-    if (!skillsDir) {
-        console.log(chalk.red('No .agent/skills directory found in current path.'));
-        console.log(chalk.dim('Make sure you are in a project with .agent/skills folder.'));
-        process.exit(1);
-    }
+export async function installSkill(skillName, options = {}) {
+    // Get or create skills directory
+    const skillsDir = getOrCreateSkillsDir();
 
     // Check if skill already exists
     if (skillExists(skillName) && !options.force) {
