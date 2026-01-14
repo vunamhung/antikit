@@ -8,25 +8,54 @@ CLI tool to manage AI agent skills from multiple repositories. Easily discover, 
 npm install -g antikit
 ```
 
+## Features
+
+- **Multi-source Support**: Fetch skills from any GitHub repository.
+- **Sub-directory Support**: Skills can reside in sub-folders (e.g. `.claude/skills`).
+- **Interactive UI**: Browse, select, and update skills with a rich terminal UI.
+- **Dependency Management**: Automatically resolves and installs skill dependencies defined in `SKILL.md`.
+- **Smart Upgrades**: Detects version changes and allows easy upgrades.
+- **Autocomplete**: Full Zsh/Bash comparison support.
+
 ## Usage
 
-### 📦 Manage Skills
+### � Quick Start
+
+**1. Setup Autocomplete (Recommended)**
+
+```bash
+antikit completion
+# Follow instructions to add to ~/.zshrc or ~/.bashrc
+```
+
+**2. Browse & Install Skills**
+
+```bash
+antikit list
+# or simply
+antikit ls
+```
+
+_Shows an interactive menu to search, select, and install/update skills._
+
+---
+
+### �📦 Manage Skills
 
 #### List available skills
 
 ```bash
-antikit list
-# or
+# Interactive mode (Default) - Browse, Multi-select, Update
 antikit ls
 
 # Search skills by name
-antikit list -s <query>
+antikit ls -s <query>
 
-# Interactive mode (select and install)
-antikit list -i
+# Text mode (Non-interactive list)
+antikit ls --text
 
 # Filter by source
-antikit list --source official
+antikit ls --source official
 ```
 
 #### Install a skill
@@ -49,6 +78,8 @@ Update your local skills to the latest version from their sources.
 ```bash
 # Upgrade all installed skills
 antikit upgrade
+# or
+antikit ug
 
 # Upgrade a specific skill
 antikit upgrade <skill-name>
@@ -77,14 +108,17 @@ antikit rm <skill-name>
 
 ### 📡 Manage Sources
 
-You can fetch skills from multiple GitHub repositories.
+You can fetch skills from multiple GitHub repositories, even from sub-directories.
 
 ```bash
 # List configured sources
 antikit source list
 
-# Add a new source (GitHub owner/repo)
-antikit source add vunamhung/another-repo
+# Add a standard Repo source (GitHub owner/repo)
+antikit source add vunamhung/antiskills
+
+# Add a source from a SUB-DIRECTORY (e.g. monorepo)
+antikit source add mrgoonie/claudekit-skills --path .claude/skills --name claudekit
 
 # Add with a custom name
 antikit source add vunamhung/private-skills --name private
@@ -116,14 +150,15 @@ _Note: You will also be notified automatically if a new version is available whe
 
 A skill is a directory containing a `SKILL.md` file.
 
-### Defining Dependencies
+### Defining Version & Dependencies
 
-You can specify dependencies in the `SKILL.md` frontmatter. `antikit` will automatically install them.
+You can specify version and dependencies in the `SKILL.md` frontmatter.
 
 ```yaml
 ---
 name: my-skill
 description: A powerful skill that needs helpers
+version: 1.0.1
 dependencies:
   - sql-helper
   - python-runner
@@ -136,7 +171,6 @@ dependencies:
 
 - Node.js >= 18.0.0
 - Git (for cloning skills)
-- A project with `.agent/skills` directory (created automatically)
 
 ## License
 
