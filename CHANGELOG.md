@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.11.1](https://github.com/vunamhung/antikit/compare/v1.11.0...v1.11.1) (2026-01-14)
+
+### Documentation
+
+- update readme with private repo authentication guide ([8a305ed](https://github.com/vunamhung/antikit/commit/8a305ede4f61a53faa5421a4752c71b96bf98757))
+
 ## [1.11.0](https://github.com/vunamhung/antikit/compare/v1.10.4...v1.11.0) (2026-01-14)
 
 ### Features
