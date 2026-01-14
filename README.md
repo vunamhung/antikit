@@ -169,22 +169,25 @@ dependencies:
 
 ---
 
-### 🔐 Authentication (Optional)
+### 🔐 Authentication & Private Repos
 
-To increase GitHub API rate limits (avoiding "API rate limit exceeded" errors), you can configure a Personal Access Token.
+To increase GitHub API rate limits or **access private repositories**, you need to configure a Personal Access Token.
+
+1.  **Create a Token**: [Click here](https://github.com/settings/tokens/new?description=antikit-cli&scopes=repo) to generate a new token.
+    - **Scope**: Select `repo` (Full control of private repositories) if you plan to use private skills. Otherwise `public_repo` is enough.
+2.  **Set Token**:
 
 ```bash
-# Set token
+# Set your token
 antikit config set-token ghp_xxxxxxxxxxxx
 
-# Check config
+# Verify configuration
 antikit config list
-# or
-antikit config ls
-
-# Remove token
-antikit config remove-token
 ```
+
+Once configured, `antikit` will automatically use this token for all GitHub requests, enabling access to your private skill repositories.
+
+> **Note:** Your token is stored locally in `~/.antikit/config.json`.
 
 ---
 
