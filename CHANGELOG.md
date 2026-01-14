@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.10.4](https://github.com/vunamhung/antikit/compare/v1.10.3...v1.10.4) (2026-01-14)
+
+### Bug Fixes
+
+- **cli:** ensure official source always appears at top of list ([5919e10](https://github.com/vunamhung/antikit/commit/5919e10648615f03869fa8e2849bfe85eecf9bdc))
+
+### Styles
+
+- improve rate limit warning with actionable guidance ([bae603c](https://github.com/vunamhung/antikit/commit/bae603ca0aa72669060b8c02b7ec7943e8884053))
+
+### Build System
+
+- configure changelog to verify all types ([86ea584](https://github.com/vunamhung/antikit/commit/86ea58454069f6a06a5a8283580127402318e243))
+
 ## [1.10.3](https://github.com/vunamhung/antikit/compare/v1.10.2...v1.10.3) (2026-01-14)
 
 ## [1.10.2](https://github.com/vunamhung/antikit/compare/v1.10.1...v1.10.2) (2026-01-14)
