@@ -204,6 +204,42 @@ antikit config set-token <new_token>
 antikit config remove-token
 ```
 
+### 📊 Statistics & Analytics
+
+View insights about your installed skills.
+
+```bash
+# Show comprehensive statistics
+antikit stats
+```
+
+**What you'll see:**
+- 📈 **Overview** - Total skills, sources, metadata coverage
+- 📦 **Source Distribution** - Skills grouped by source with percentages
+- 🔢 **Version Stats** - Version tracking information
+- 🌟 **Top Skills** - Recently installed or most used skills
+
+**Example Output:**
+```
+📊 Antikit Statistics
+
+Metric                        Value
+────────────────────────────────────
+Total Skills Installed        12
+Total Sources Configured      3
+Skills with Metadata          10
+
+📦 Skills by Source:
+
+Source                  Skills    Percentage
+───────────────────────────────────────────
+antiskills             8         66.7% ████████████████
+claudekit              3         25.0% █████
+local                  1         8.3%  ██
+```
+
+---
+
 ### 🔄 Tool Maintenance
 
 **Update CLI**

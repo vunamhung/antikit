@@ -11,6 +11,7 @@ import { showSkillInfo } from './commands/info.js';
 import { validateSkill } from './commands/validate.js';
 import { updateCli } from './commands/update.js';
 import { upgradeSkills } from './commands/upgrade.js';
+import { showStats } from './commands/stats.js';
 import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
 import { listConfig, setGitHubToken, removeGitHubToken } from './commands/config.js';
 import { checkForUpdates } from './utils/updateNotifier.js';
@@ -88,6 +89,11 @@ program
   .option('-i, --interactive', 'Interactive mode to select skills (default in TTY)')
   .option('-y, --yes', 'Skip confirmation')
   .action(upgradeSkills);
+
+program
+  .command('stats')
+  .description('Show statistics about installed skills')
+  .action(showStats);
 
 program
   .command('completion')
