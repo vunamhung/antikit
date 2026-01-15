@@ -2,12 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## [1.12.7](https://github.com/vunamhung/antikit/compare/v1.12.6...v1.12.7) (2026-01-14)
+## [1.13.0](https://github.com/vunamhung/antikit/compare/v1.12.7...v1.13.0) (2026-01-15)
 
+### Features
+
+- **upgrade:** add interactive mode for selecting specific skills to upgrade ([4836b6f](https://github.com/vunamhung/antikit/commit/4836b6f))
+  - Add checkbox selection similar to `list` command
+  - Display version comparison (local → remote) with visual indicators
+  - Auto-detect update availability and disable up-to-date skills
+  - Support both interactive (`-i`) and auto upgrade modes
+- **branding:** rename official source from 'official' to 'antiskills' ([4836b6f](https://github.com/vunamhung/antikit/commit/4836b6f))
+  - Add migration logic to auto-convert legacy source names
+  - Ensure antiskills source always displays at top of lists
+
+## [1.12.7](https://github.com/vunamhung/antikit/compare/v1.12.6...v1.12.7) (2026-01-14)
 
 ### Code Refactoring
 
-* extract common utilities, fix bugs, add test suite ([9d6009a](https://github.com/vunamhung/antikit/commit/9d6009ae5a73acfe410191371bff796c4d712c97))
+- extract common utilities, fix bugs, add test suite ([9d6009a](https://github.com/vunamhung/antikit/commit/9d6009ae5a73acfe410191371bff796c4d712c97))
 
 ## [1.12.6](https://github.com/vunamhung/antikit/compare/v1.12.5...v1.12.6) (2026-01-14)
 
