@@ -56,9 +56,12 @@ program
   .action(installSkill);
 
 program
-  .command('remove <skill>')
+  .command('remove [skill]')
   .alias('rm')
-  .description('Remove an installed skill')
+  .description('Remove installed skill(s)')
+  .option('-i, --interactive', 'Interactive mode to select skills (default in TTY)')
+  .option('-a, --all', 'Remove all installed skills')
+  .option('-y, --yes', 'Skip confirmation (use with --all)')
   .action(removeSkill);
 
 program

@@ -132,10 +132,29 @@ antikit upgrade -y
 antikit local
 # Alias: antikit l
 
-# Remove a skill
+# Remove a specific skill
 antikit remove <skill-name>
 # Alias: antikit rm <skill-name>
+
+# Interactive Remove - Select multiple skills to remove
+antikit remove
+antikit remove -i
+antikit remove --interactive
+
+# Remove all skills (with confirmation)
+antikit remove --all
+
+# Remove all without confirmation (dangerous!)
+antikit remove --all --yes
+antikit remove -a -y
 ```
+
+**Interactive Remove Features:**
+- ✨ **Checkbox Selection** - Choose multiple skills to remove
+- 📋 **Summary Preview** - See what will be removed before confirming
+- 🚨 **Safety First** - Double confirmation with default=No
+- ⚠️ **Warning Indicators** - Red text and warning icons for destructive operations
+
 
 ### 📡 Source Management
 
