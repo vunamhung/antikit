@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.12.8](https://github.com/vunamhung/antikit/compare/v1.13.0...v1.12.8) (2026-01-15)
+
+### Chores
+
+- revert version to 1.12.7 and clean up changelog ([edea684](https://github.com/vunamhung/antikit/commit/edea684ffc402c209f175d7685e9ed0994a1beb3))
 
 ## [1.12.7](https://github.com/vunamhung/antikit/compare/v1.12.6...v1.12.7) (2026-01-14)
 
