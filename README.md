@@ -63,7 +63,7 @@ antikit list
 antikit ls -s <keyword>
 
 # Filter by source
-antikit ls --source official
+antikit ls --source antiskills
 antikit ls --source claudekit
 
 # Text Mode (Non-interactive, good for scripting)
@@ -95,16 +95,35 @@ antikit install <skill-name> --force
 Keep your skills up-to-date with one command.
 
 ```bash
-# Upgrade all installed skills (Interactive confirmation)
+# Interactive Mode (Default in TTY) - Select specific skills to upgrade
 antikit upgrade
+# Select skills with checkbox, see version changes (local → remote)
 # Alias: antikit ug
+
+# Explicit Interactive Mode
+antikit upgrade -i
+antikit upgrade --interactive
 
 # Upgrade a specific skill
 antikit upgrade <skill-name>
 
-# Upgrade all without confirmation (CI/Script mode)
+# Auto-upgrade all (with confirmation)
+antikit upgrade
+
+# Auto-upgrade all without confirmation (CI/Script mode)
 antikit upgrade --yes
+antikit upgrade -y
 ```
+
+**Interactive Upgrade Features:**
+- ✨ **Checkbox Selection** - Choose specific skills to upgrade
+- 📊 **Version Display** - See current vs. latest version (e.g., `v1.0.0 → v1.2.0`)
+- 🎯 **Smart Filtering** - Only upgradeable skills are selectable
+- 🚦 **Visual Indicators**:
+  - `↑` Yellow - Update available
+  - `✓` Green - Already up-to-date (disabled)
+  - `✗` Red - Error/Cannot upgrade (disabled)
+
 
 **Manage Local Skills**
 
