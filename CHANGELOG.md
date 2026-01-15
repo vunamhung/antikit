@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.14.0](https://github.com/vunamhung/antikit/compare/v1.12.8...v1.14.0) (2026-01-15)
+
+### Features
+
+- add interactive mode for remove command ([a63fcd7](https://github.com/vunamhung/antikit/commit/a63fcd7c02be3217c1b2aa140e66bbc4d5d908dc))
+
+### Documentation
+
+- update README with interactive upgrade mode and antiskills branding ([156aaf0](https://github.com/vunamhung/antikit/commit/156aaf0dc8a0bf96a14d0f2fda83ea7001d9ccac))
+
 ## [1.12.8](https://github.com/vunamhung/antikit/compare/v1.13.0...v1.12.8) (2026-01-15)
 
 ### Chores
