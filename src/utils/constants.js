@@ -4,7 +4,7 @@
  */
 
 // Source names
-export const OFFICIAL_SOURCE = 'official';
+export const OFFICIAL_SOURCE = 'antiskills';
 
 // File names
 export const SKILL_MD = 'SKILL.md';

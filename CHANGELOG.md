@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file. See [commit
 
 ## [1.12.7](https://github.com/vunamhung/antikit/compare/v1.12.6...v1.12.7) (2026-01-14)
 
+
 ### Code Refactoring
 
-- extract common utilities, fix bugs, add test suite ([9d6009a](https://github.com/vunamhung/antikit/commit/9d6009ae5a73acfe410191371bff796c4d712c97))
+* extract common utilities, fix bugs, add test suite ([9d6009a](https://github.com/vunamhung/antikit/commit/9d6009ae5a73acfe410191371bff796c4d712c97))
 
 ## [1.12.6](https://github.com/vunamhung/antikit/compare/v1.12.5...v1.12.6) (2026-01-14)
 

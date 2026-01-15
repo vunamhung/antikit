@@ -54,7 +54,26 @@ export function loadConfig() {
 
   try {
     const content = readFileSync(CONFIG_FILE, 'utf-8');
-    return JSON.parse(content);
+    const config = JSON.parse(content);
+
+    // Migration: Rename legacy "official" source to "antiskills"
+    let needsSave = false;
+    if (config.sources) {
+      config.sources = config.sources.map(source => {
+        if (source.name === 'official') {
+          needsSave = true;
+          return { ...source, name: OFFICIAL_SOURCE };
+        }
+        return source;
+      });
+    }
+
+    // Save migrated config
+    if (needsSave) {
+      saveConfig(config);
+    }
+
+    return config;
   } catch {
     return DEFAULT_CONFIG;
   }

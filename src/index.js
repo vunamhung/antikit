@@ -82,6 +82,7 @@ program
   .command('upgrade [skill]')
   .alias('ug')
   .description('Upgrade installed skills')
+  .option('-i, --interactive', 'Interactive mode to select skills (default in TTY)')
   .option('-y, --yes', 'Skip confirmation')
   .action(upgradeSkills);
 
