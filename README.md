@@ -238,6 +238,55 @@ claudekit              3         25.0% █████
 local                  1         8.3%  ██
 ```
 
+
+---
+
+### 💾 Backup & Restore
+
+Export and import your skills configuration for easy migration between machines or disaster recovery.
+
+**Create Backup**
+
+```bash
+# Create backup with auto-generated filename
+antikit backup
+# Creates: antikit-backup-2026-01-15.json
+
+# Specify custom output file
+antikit backup my-setup.json
+
+# Force backup even if no skills installed
+antikit backup --force
+```
+
+**Restore from Backup**
+
+```bash
+# Restore with confirmation prompt
+antikit restore antikit-backup-2026-01-15.json
+
+# Auto-confirm (no prompts)
+antikit restore my-setup.json --yes
+
+# Force reinstall existing skills
+antikit restore my-setup.json --force
+
+# Skip restoring sources (only install skills)
+antikit restore my-setup.json --skip-sources
+```
+
+**Backup File Contents:**
+- 📦 List of installed skills with versions
+- 🔗 Source configurations
+- 📅 Backup timestamp and metadata
+- 🔒 Config (tokens are masked for security)
+
+**Use Cases:**
+- 🖥️ **Team Onboarding** - Share skill setup with team members
+- 🔄 **Machine Migration** - Move setup to new computer
+- 💾 **Disaster Recovery** - Restore after accidental removal
+- 📸 **Snapshots** - Backup before major changes
+
 ---
 
 ### 🔄 Tool Maintenance

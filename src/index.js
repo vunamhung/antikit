@@ -12,6 +12,8 @@ import { validateSkill } from './commands/validate.js';
 import { updateCli } from './commands/update.js';
 import { upgradeSkills } from './commands/upgrade.js';
 import { showStats } from './commands/stats.js';
+import { backupSkills } from './commands/backup.js';
+import { restoreSkills } from './commands/restore.js';
 import { listSources, addNewSource, removeExistingSource, setDefault } from './commands/source.js';
 import { listConfig, setGitHubToken, removeGitHubToken } from './commands/config.js';
 import { checkForUpdates } from './utils/updateNotifier.js';
@@ -94,6 +96,20 @@ program
   .command('stats')
   .description('Show statistics about installed skills')
   .action(showStats);
+
+program
+  .command('backup [output]')
+  .description('Backup installed skills configuration')
+  .option('-f, --force', 'Create backup even if no skills installed')
+  .action(backupSkills);
+
+program
+  .command('restore <backup-file>')
+  .description('Restore skills from backup file')
+  .option('-y, --yes', 'Skip confirmation')
+  .option('-f, --force', 'Force reinstall existing skills')
+  .option('--skip-sources', 'Skip restoring sources')
+  .action(restoreSkills);
 
 program
   .command('completion')
