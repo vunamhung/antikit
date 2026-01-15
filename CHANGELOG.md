@@ -2,17 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## [1.16.0](https://github.com/vunamhung/antikit/compare/v1.15.0...v1.16.0) (2026-01-15)
-
+## [1.17.0](https://github.com/vunamhung/antikit/compare/v1.16.0...v1.17.0) (2026-01-15)
 
 ### Features
 
-* add stats command for skills analytics ([37cfe0f](https://github.com/vunamhung/antikit/commit/37cfe0f12fdbbbd2c206e564d6d1d8a80405ab8f))
+- add backup and restore commands for skills configuration ([eeec76a](https://github.com/vunamhung/antikit/commit/eeec76a8a447bff69500e85d0bcc6449a13df690))
 
+## [1.16.0](https://github.com/vunamhung/antikit/compare/v1.15.0...v1.16.0) (2026-01-15)
+
+### Features
+
+- add stats command for skills analytics ([37cfe0f](https://github.com/vunamhung/antikit/commit/37cfe0f12fdbbbd2c206e564d6d1d8a80405ab8f))
 
 ### Chores
 
-* add release helper script to auto-push tags ([ec2a7a4](https://github.com/vunamhung/antikit/commit/ec2a7a44a24aaae4d1b6e4c514881bad81db396a))
+- add release helper script to auto-push tags ([ec2a7a4](https://github.com/vunamhung/antikit/commit/ec2a7a44a24aaae4d1b6e4c514881bad81db396a))
 
 ## [1.15.0](https://github.com/vunamhung/antikit/compare/v1.12.8...v1.15.0) (2026-01-15)
 
