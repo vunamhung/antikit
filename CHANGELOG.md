@@ -4,17 +4,20 @@ All notable changes to this project will be documented in this file. See [commit
 
 ## [1.15.0](https://github.com/vunamhung/antikit/compare/v1.12.8...v1.15.0) (2026-01-15)
 
+
 ### Features
 
-- add interactive mode for remove command ([a63fcd7](https://github.com/vunamhung/antikit/commit/a63fcd7c02be3217c1b2aa140e66bbc4d5d908dc))
+* add interactive mode for remove command ([a63fcd7](https://github.com/vunamhung/antikit/commit/a63fcd7c02be3217c1b2aa140e66bbc4d5d908dc))
+
 
 ### Chores
 
-- **release:** 1.14.0 ([09b0077](https://github.com/vunamhung/antikit/commit/09b00778ce0c843aba1ffea0ffd00dfecc010981))
+* **release:** 1.14.0 ([09b0077](https://github.com/vunamhung/antikit/commit/09b00778ce0c843aba1ffea0ffd00dfecc010981))
+
 
 ### Documentation
 
-- update README with interactive upgrade mode and antiskills branding ([156aaf0](https://github.com/vunamhung/antikit/commit/156aaf0dc8a0bf96a14d0f2fda83ea7001d9ccac))
+* update README with interactive upgrade mode and antiskills branding ([156aaf0](https://github.com/vunamhung/antikit/commit/156aaf0dc8a0bf96a14d0f2fda83ea7001d9ccac))
 
 ## [1.14.0](https://github.com/vunamhung/antikit/compare/v1.12.8...v1.14.0) (2026-01-15)
 
