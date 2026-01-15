@@ -2,22 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## [1.15.0](https://github.com/vunamhung/antikit/compare/v1.12.8...v1.15.0) (2026-01-15)
-
+## [1.16.0](https://github.com/vunamhung/antikit/compare/v1.15.0...v1.16.0) (2026-01-15)
 
 ### Features
 
-* add interactive mode for remove command ([a63fcd7](https://github.com/vunamhung/antikit/commit/a63fcd7c02be3217c1b2aa140e66bbc4d5d908dc))
-
+- add stats command for skills analytics ([37cfe0f](https://github.com/vunamhung/antikit/commit/37cfe0f12fdbbbd2c206e564d6d1d8a80405ab8f))
 
 ### Chores
 
-* **release:** 1.14.0 ([09b0077](https://github.com/vunamhung/antikit/commit/09b00778ce0c843aba1ffea0ffd00dfecc010981))
+- add release helper script to auto-push tags ([ec2a7a4](https://github.com/vunamhung/antikit/commit/ec2a7a44a24aaae4d1b6e4c514881bad81db396a))
 
+## [1.15.0](https://github.com/vunamhung/antikit/compare/v1.12.8...v1.15.0) (2026-01-15)
+
+### Features
+
+- add interactive mode for remove command ([a63fcd7](https://github.com/vunamhung/antikit/commit/a63fcd7c02be3217c1b2aa140e66bbc4d5d908dc))
+
+### Chores
+
+- **release:** 1.14.0 ([09b0077](https://github.com/vunamhung/antikit/commit/09b00778ce0c843aba1ffea0ffd00dfecc010981))
 
 ### Documentation
 
-* update README with interactive upgrade mode and antiskills branding ([156aaf0](https://github.com/vunamhung/antikit/commit/156aaf0dc8a0bf96a14d0f2fda83ea7001d9ccac))
+- update README with interactive upgrade mode and antiskills branding ([156aaf0](https://github.com/vunamhung/antikit/commit/156aaf0dc8a0bf96a14d0f2fda83ea7001d9ccac))
 
 ## [1.14.0](https://github.com/vunamhung/antikit/compare/v1.12.8...v1.14.0) (2026-01-15)
 
