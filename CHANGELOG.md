@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.13.1](https://github.com/vunamhung/antikit/compare/v1.13.0...v1.13.1) (2026-01-15)
+
 ## [1.13.0](https://github.com/vunamhung/antikit/compare/v1.12.7...v1.13.0) (2026-01-15)
 
 ### Features
